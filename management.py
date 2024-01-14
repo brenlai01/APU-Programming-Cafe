@@ -1,6 +1,6 @@
 
-def register_user(): #register
-    user_type = input('User type: ')
+def register_user(): 
+    user_type = input('User type: ') #ask for user input
     username = input('Username: ')
     password = input('Password: ')
     
@@ -8,10 +8,10 @@ def register_user(): #register
         lines = file.readlines()
         print(lines)
     for line in lines:
-        stored_user_type, stored_username, stored_password = line.strip().split(':') #split ':' in database.txt
-        # print(stored_user_type, stored_username, stored_password)
+        stored_user_type, stored_username, stored_password = line.strip().split(':') #split ':' in database.txt & removes any whitespace
+        # assigns elements from split(':') e.g. if line = trainer:trainer1:asdasd stored_user_type = trainer, stored_username = trainer1 stored_password = asdasd
         if username == stored_username:
-            print(f'Error: Username "{username}" already exists. Please choose a different username.')
+            print(f'Error: Username "{username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
             user_type = input('User type: ')
             username = input('Username: ')
             password = input('Password: ')
