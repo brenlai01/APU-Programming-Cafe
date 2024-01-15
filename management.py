@@ -92,6 +92,8 @@ Select a number: ''')
             menu_admin()
         elif choice == 'Delete' or 'delete':
             delete_trainer()
+        else:
+            print('Enter a v')
 
     elif option == '2':
         assign_level()
@@ -107,4 +109,3 @@ Select a number: ''')
         menu_admin()
 
 login()
-ajfsvaascascm

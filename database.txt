@@ -6,3 +6,4 @@ lecturer:bren:123123
 admin:admin1:asdasd
 trainer:testtrainer:asdasd
 trainer:trainer6:asdasd
+trainer:trainer7:asdasd
