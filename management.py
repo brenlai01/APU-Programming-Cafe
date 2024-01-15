@@ -1,18 +1,19 @@
 
-def register_user(): 
-    user_type = input('User type: ') #ask for user input
+def register_trainer(): 
+    user_type = 'trainer' #ask for user input
     username = input('Username: ')
     password = input('Password: ')
     
     with open('database.txt','r') as file: #open file read by line and makes a list
         lines = file.readlines()
-        print(lines)
+        
     for line in lines:
-        stored_user_type, stored_username, stored_password = line.strip().split(':') #split ':' in database.txt & removes any whitespace
+        stored_user_type, stored_username, stored_password = line.strip().split(':') 
+        #split ':' in database.txt & removes any whitespace
         # assigns elements from split(':') e.g. if line = trainer:trainer1:asdasd stored_user_type = trainer, stored_username = trainer1 stored_password = asdasd
         if username == stored_username:
             print(f'Error: Username "{username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
-            user_type = input('User type: ')
+            user_type = 'trainer'
             username = input('Username: ')
             password = input('Password: ')
 
@@ -20,6 +21,26 @@ def register_user():
         file.write(f'{user_type}:{username}:{password}\n')
                 
     print(f'{user_type} {username} registered successfully.')
+
+# def delete_trainer():
+#     username = input('Enter the username of the trainer you would like to delete: ')
+    
+#     with open('database.exe','r') as file:
+#         lines = file.readlines()
+    
+#     for line in lines:
+#         stored_user_type, stored_username, stored_password = line.strip().split(':')
+    
+#         if username != stored_username:
+#             print(f'Error: Username does not exist. Please choose another username.')
+#             username = input('Enter the username of the trainer you would like to delete: ')
+    
+#         elif username == stored_username:
+#             choice = input(f'Are you sure you want to delete trainer {username}?Y/N: ')
+#             if choice == 'Y' or 'y':
+#                 with open('database.txt','w') as file
+
+
         
 def login():
     max_attempts = 3
@@ -35,15 +56,15 @@ def login():
         for line in lines:
             stored_user_type, stored_username, stored_password = line.strip().split(':')
             if username == stored_username and password == stored_password:
-                print(f'Login successful! Welcome, {stored_username}.')
+                print(f'Login successful! Welcome, {stored_user_type} {stored_username}.')
                 if stored_user_type == 'admin':
-                    admin_home()
+                    menu_admin()
                 elif stored_user_type == 'trainer':
-                    trainer_home()
+                    menu_trainer()
                 elif stored_user_type == 'lecturer':
-                    lecturer_home()
+                    menu_lecturer()
                 elif stored_user_type == 'student':
-                    student_home()
+                    menu_student()
                 return
 
         login_attempts += 1
@@ -51,39 +72,8 @@ def login():
         if login_attempts < max_attempts:
             print(f'Login failed. Please check your username and password. Attempt {login_attempts} of {max_attempts}.')
         else:
-            print('Account locked. Too many failed login attempts.')
+            print('Account locked. Too many failed login attempts. Please contact an admin.')
             return
-
-# login_status, user_type = login('admin1', 'admin123')
-
-# if login_status:
-#     print(f'Welcome, {user_type}!')
-#     if user_type == 'administrator':
-        
-#     elif user_type == 'trainer':
-       
-#     elif user_type == 'lecturer':
-        
-#     elif user_type == 'student':
-        
-# else:
-#     print('Invalid login attempt.')
-
-# register_user()
-
-
-def admin_home():
-    print('you are admin')
-    menu_admin()
-
-def trainer_home():
-    print('you are trainer')
-
-def lecturer_home():
-    print('you are lecturer')
-
-def student_home():
-    print('you are student')
     
 def menu_admin(): #menu admin
     option = input('''
@@ -95,9 +85,11 @@ Operations:
 Select a number: ''')
     
     if option == '1':
-        choice = input('Register/Delete: ')
+        choice = input('Register/Delete trainer: ')
         if choice == 'Register' or 'register':
-            register_user()
+            register_trainer()
+            print('\nWhat else would you like to do today?')
+            menu_admin()
         elif choice == 'Delete' or 'delete':
             delete_trainer()
 

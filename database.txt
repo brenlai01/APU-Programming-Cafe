@@ -5,3 +5,4 @@ trainer:luwit:123123
 lecturer:bren:123123
 admin:admin1:asdasd
 trainer:testtrainer:asdasd
+trainer:trainer6:asdasd
