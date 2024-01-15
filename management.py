@@ -12,7 +12,7 @@ def register_trainer():
         #split ':' in database.txt & removes any whitespace
         # assigns elements from split(':') e.g. if line = trainer:trainer1:asdasd stored_user_type = trainer, stored_username = trainer1 stored_password = asdasd
         if username == stored_username:
-            print(f'Error: Username "{username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
+            print(f'\nError: Username "{username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
             user_type = 'trainer'
             username = input('Username: ')
             password = input('Password: ')
@@ -20,9 +20,9 @@ def register_trainer():
     with open('database.txt', 'a') as file:
         file.write(f'{user_type}:{username}:{password}\n')
                 
-    print(f'{user_type} {username} registered successfully.')
+    print(f'\n{user_type} {username} registered successfully.')
 
-# def delete_trainer():
+def delete_trainer():
 #     username = input('Enter the username of the trainer you would like to delete: ')
     
 #     with open('database.exe','r') as file:
@@ -39,6 +39,7 @@ def register_trainer():
 #             choice = input(f'Are you sure you want to delete trainer {username}?Y/N: ')
 #             if choice == 'Y' or 'y':
 #                 with open('database.txt','w') as file
+    print('bruh')
 
 
         
@@ -56,7 +57,7 @@ def login():
         for line in lines:
             stored_user_type, stored_username, stored_password = line.strip().split(':')
             if username == stored_username and password == stored_password:
-                print(f'Login successful! Welcome, {stored_user_type} {stored_username}.')
+                print(f'\nLogin successful! Welcome, {stored_user_type} {stored_username}.')
                 if stored_user_type == 'admin':
                     menu_admin()
                 elif stored_user_type == 'trainer':
@@ -70,39 +71,45 @@ def login():
         login_attempts += 1
 
         if login_attempts < max_attempts:
-            print(f'Login failed. Please check your username and password. Attempt {login_attempts} of {max_attempts}.')
+            print(f'\nLogin failed. Please check your username and password. Attempt {login_attempts} of {max_attempts}.\n')
         else:
-            print('Account locked. Too many failed login attempts. Please contact an admin.')
+            print('\nAccount locked. Too many failed login attempts. Please contact an admin.')
             return
     
 def menu_admin(): #menu admin
     option = input('''
 Operations:
-1. Register/Delete trainer
-2. Assign trainer to respective level
-3. View monthly income
-4. Update profile
+1. Register trainer
+2. Delete trainer
+3. Assign trainer to respective level
+4. View monthly income
+5. Update profile
+6. Logout
 Select a number: ''')
     
     if option == '1':
-        choice = input('Register/Delete trainer: ')
-        if choice == 'Register' or 'register':
-            register_trainer()
-            print('\nWhat else would you like to do today?')
-            menu_admin()
-        elif choice == 'Delete' or 'delete':
-            delete_trainer()
-        else:
-            print('Enter a v')
-
+        register_trainer()
+        print('\nWhat else would you like to do today?')
+        menu_admin()
+            
     elif option == '2':
-        assign_level()
+        delete_trainer()
+        menu_admin
 
     elif option == '3':
-        monthly_inc()
+        assign_level()
+        menu_admin()
 
     elif option == '4':
+        view_income()
+        menu_admin()
+    
+    elif option == '5':
         update_profile()
+        menu_admin()
+
+    elif option == '6':
+        logout()
     
     else:
         print('Please enter a valid number')

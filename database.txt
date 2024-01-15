@@ -1,9 +1,2 @@
-trainer:trainer1:asdasd
-trainer:trainer2:asdasd
-trainer:trainer3:asdasd
-trainer:luwit:123123
-lecturer:bren:123123
 admin:admin1:asdasd
-trainer:testtrainer:asdasd
-trainer:trainer6:asdasd
-trainer:trainer7:asdasd
+trainer:trainer1:asdasd
