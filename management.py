@@ -6,6 +6,7 @@ def register_trainer():
     
     with open('database.txt','r') as file: #open file read by line and makes a list
         lines = file.readlines()
+        file.close()
         
     for line in lines:
         stored_user_type, stored_username, stored_password = line.strip().split(':') 
@@ -19,27 +20,27 @@ def register_trainer():
 
     with open('database.txt', 'a') as file:
         file.write(f'{user_type}:{username}:{password}\n')
+        file.close()
                 
     print(f'\n{user_type} {username} registered successfully.')
 
-def delete_trainer():
+# def delete_trainer():
 #     username = input('Enter the username of the trainer you would like to delete: ')
     
-#     with open('database.exe','r') as file:
+#     with open('database.txt','r') as file:
 #         lines = file.readlines()
+#         file.close()
     
+#     with open('database.txt','w'):
 #     for line in lines:
 #         stored_user_type, stored_username, stored_password = line.strip().split(':')
+#         # print(stored_user_type, stored_username, stored_password)
+#         if username == stored_username:
+#             line.lstrip()
+
+
+
     
-#         if username != stored_username:
-#             print(f'Error: Username does not exist. Please choose another username.')
-#             username = input('Enter the username of the trainer you would like to delete: ')
-    
-#         elif username == stored_username:
-#             choice = input(f'Are you sure you want to delete trainer {username}?Y/N: ')
-#             if choice == 'Y' or 'y':
-#                 with open('database.txt','w') as file
-    print('bruh')
 
 
         
@@ -53,6 +54,7 @@ def login():
 
         with open('database.txt', 'r') as file:
             lines = file.readlines()
+            file.close()
 
         for line in lines:
             stored_user_type, stored_username, stored_password = line.strip().split(':')
@@ -94,7 +96,7 @@ Select a number: ''')
             
     elif option == '2':
         delete_trainer()
-        menu_admin
+        menu_admin()
 
     elif option == '3':
         assign_level()
@@ -114,6 +116,20 @@ Select a number: ''')
     else:
         print('Please enter a valid number')
         menu_admin()
+def logout():
+    print('You have successfully logged out.')
+    return
 
+<<<<<<< Updated upstream
 login()
+<<<<<<< HEAD
 print(123)
+=======
+def menu_trainer():
+    print('you are a trainer.')
+login()
+    
+# delete_trainer()
+>>>>>>> Stashed changes
+=======
+>>>>>>> 4e74d6a4be19c8c1cc725bc7e275148fdba01d1b
