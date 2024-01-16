@@ -1,8 +1,8 @@
 
 def register_trainer(): 
     user_type = 'trainer' #ask for user input
-    username = input('Username: ')
-    password = input('Password: ')
+    username = input('Trainer username: ')
+    password = input('Trainer password: ')
     
     with open('database.txt','r') as file: #open file read by line and makes a list
         lines = file.readlines()
@@ -15,8 +15,8 @@ def register_trainer():
         if username == stored_username:
             print(f'\nError: Username "{username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
             user_type = 'trainer'
-            username = input('Username: ')
-            password = input('Password: ')
+            username = input('Trainer username: ')
+            password = input('Trainer password: ')
 
     with open('database.txt', 'a') as file:
         file.write(f'{user_type}:{username}:{password}\n')
@@ -65,13 +65,28 @@ def delete_trainer():
     
     username = input('Enter username of trainer you would like to delete: ')
 
+    user_exist = False # check if username exist. Right now this is set to false
+
     with open('database.txt','w') as file:
+        
         for line in lines:
-            if username in line:
+            stored_user_type, stored_username, stored_password = line.strip().split(':')
+            
+            if username == stored_username and stored_user_type == 'trainer':
                 line.rstrip()
+                user_exist = True # user exist set to true as username input same as store_username in database
+            
             else:
                 file.write(line)
-   
+    
+    if user_exist: #when user_exist is true username deleted
+        print(f'Trainer {username} has been deleted.')
+    
+    else:
+        print(f'This trainer does not exist.')
+        delete_trainer()
+
+  
 def menu_admin(): #menu admin
     option = input('''
 Operations:
@@ -90,6 +105,7 @@ Select a number: ''')
             
     elif option == '2':
         delete_trainer()
+        print('\nWhat else would you like to do today?')
         menu_admin()
 
     elif option == '3':
@@ -120,7 +136,7 @@ def menu_trainer():
     print('you are a trainer.')
     pass
     
-def menu_lectuer():
+def menu_lecturer():
     print('you are a trainer.')
     pass
     
