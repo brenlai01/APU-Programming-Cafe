@@ -116,3 +116,4 @@ Select a number: ''')
         menu_admin()
 
 login()
+print(123)
