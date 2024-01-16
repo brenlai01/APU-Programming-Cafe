@@ -122,6 +122,7 @@ def logout():
 
 <<<<<<< Updated upstream
 login()
+<<<<<<< HEAD
 print(123)
 =======
 def menu_trainer():
@@ -130,3 +131,5 @@ login()
     
 # delete_trainer()
 >>>>>>> Stashed changes
+=======
+>>>>>>> 4e74d6a4be19c8c1cc725bc7e275148fdba01d1b
