@@ -24,26 +24,6 @@ def register_trainer():
                 
     print(f'\n{user_type} {username} registered successfully.')
 
-# def delete_trainer():
-#     username = input('Enter the username of the trainer you would like to delete: ')
-    
-#     with open('database.txt','r') as file:
-#         lines = file.readlines()
-#         file.close()
-    
-#     with open('database.txt','w'):
-#     for line in lines:
-#         stored_user_type, stored_username, stored_password = line.strip().split(':')
-#         # print(stored_user_type, stored_username, stored_password)
-#         if username == stored_username:
-#             line.lstrip()
-
-
-
-    
-
-
-        
 def login():
     max_attempts = 3
     login_attempts = 0
@@ -120,16 +100,20 @@ def logout():
     print('You have successfully logged out.')
     return
 
-<<<<<<< Updated upstream
 login()
-<<<<<<< HEAD
-print(123)
-=======
+
 def menu_trainer():
     print('you are a trainer.')
-login()
+    pass
     
-# delete_trainer()
->>>>>>> Stashed changes
-=======
->>>>>>> 4e74d6a4be19c8c1cc725bc7e275148fdba01d1b
+def menu_lectuer():
+    print('you are a trainer.')
+    pass
+    
+def menu_student():
+    print('you are a trainer.')
+    pass
+    
+
+    
+
