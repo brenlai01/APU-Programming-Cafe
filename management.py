@@ -11,7 +11,7 @@ def register_trainer():
     for line in lines:
         stored_user_type, stored_username, stored_password = line.strip().split(':') 
         #split ':' in database.txt & removes any whitespace
-        # assigns elements from split(':') e.g. if line = trainer:trainer1:asdasd stored_user_type = trainer, stored_username = trainer1 stored_password = asdasd
+        #assigns elements from split(':') e.g. if line = trainer:trainer1:asdasd stored_user_type = trainer, stored_username = trainer1 stored_password = asdasd
         if username == stored_username:
             print(f'\nError: Username "{username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
             user_type = 'trainer'
@@ -57,7 +57,21 @@ def login():
         else:
             print('\nAccount locked. Too many failed login attempts. Please contact an admin.')
             return
+            
+def delete_trainer():
+    with open('database.txt','r') as file:
+        lines = file.readlines()
+        file.close()
     
+    username = input('Enter username of trainer you would like to delete: ')
+
+    with open('database.txt','w') as file:
+        for line in lines:
+            if username in line:
+                line.rstrip()
+            else:
+                file.write(line)
+   
 def menu_admin(): #menu admin
     option = input('''
 Operations:
