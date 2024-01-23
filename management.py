@@ -1,29 +1,4 @@
 
-def register_trainer(): 
-    user_type = 'trainer' #ask for user input
-    username = input('Trainer username: ')
-    password = input('Trainer password: ')
-    
-    with open('database.txt','r') as file: #open file read by line and makes a list
-        lines = file.readlines()
-        file.close()
-        
-    for line in lines:
-        stored_user_type, stored_username, stored_password = line.strip().split(':') 
-        #split ':' in database.txt & removes any whitespace
-        #assigns elements from split(':') e.g. if line = trainer:trainer1:asdasd stored_user_type = trainer, stored_username = trainer1 stored_password = asdasd
-        if username == stored_username:
-            print(f'\nError: Username "{username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
-            user_type = 'trainer'
-            username = input('Trainer username: ')
-            password = input('Trainer password: ')
-
-    with open('database.txt', 'a') as file:
-        file.write(f'{user_type}:{username}:{password}\n')
-        file.close()
-                
-    print(f'\n{user_type} {username} registered successfully.')
-
 def login():
     max_attempts = 3
     login_attempts = 0
@@ -57,36 +32,11 @@ def login():
         else:
             print('\nAccount locked. Too many failed login attempts. Please contact an admin.')
             return
-            
-def delete_trainer():
-    with open('database.txt','r') as file:
-        lines = file.readlines()
-        file.close()
-    
-    username = input('Enter username of trainer you would like to delete: ')
 
-    user_exist = False # check if username exist. Right now this is set to false
-
-    with open('database.txt','w') as file:
-        
-        for line in lines:
-            stored_user_type, stored_username, stored_password = line.strip().split(':')
-            
-            if username == stored_username and stored_user_type == 'trainer':
-                line.rstrip()
-                user_exist = True # user exist set to true as username input same as store_username in database
-            
-            else:
-                file.write(line)
-    
-    if user_exist: #when user_exist is true username deleted
-        print(f'Trainer {username} has been deleted.')
-    
-    else:
-        print(f'This trainer does not exist.')
-        delete_trainer()
-
-  
+def logout():
+    print('You have successfully logged out.')
+    login()
+              
 def menu_admin(): #menu admin
     option = input('''
 Operations:
@@ -109,7 +59,7 @@ Select a number: ''')
         menu_admin()
 
     elif option == '3':
-        assign_level()
+        assign_levelmodule()
         menu_admin()
 
     elif option == '4':
@@ -126,11 +76,6 @@ Select a number: ''')
     else:
         print('Please enter a valid number')
         menu_admin()
-def logout():
-    print('You have successfully logged out.')
-    return
-
-login()
 
 def menu_trainer():
     print('you are a trainer.')
@@ -144,6 +89,124 @@ def menu_student():
     print('you are a trainer.')
     pass
     
-
+def register_trainer(): 
+    user_type = 'trainer' #ask for user input
+    username = input('Trainer username: ')
+    password = input('Trainer password: ')
     
+    with open('database.txt','r') as file: #open file read by line and makes a list
+        lines = file.readlines()
+        file.close()
+        
+    for line in lines:
+        stored_user_type, stored_username, stored_password = line.strip().split(':') 
+        #split ':' in database.txt & removes any whitespace
+        #assigns elements from split(':') e.g. if line = trainer:trainer1:asdasd stored_user_type = trainer, stored_username = trainer1 stored_password = asdasd
+        if username == stored_username:
+            print(f'\nError: Username "{username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
+            user_type = 'trainer'
+            username = input('Trainer username: ')
+            password = input('Trainer password: ')
 
+    with open('database.txt', 'a') as file:
+        file.write(f'{user_type}:{username}:{password}\n')
+        file.close()
+    
+    with open('trainer_module.txt','a') as file:
+        file.write(f'{user_type}:{username}\n')
+                
+    print(f'\n{user_type} {username} registered successfully.')
+      
+def delete_trainer():
+    with open('database.txt','r') as file:
+        lines = file.readlines()
+        file.close()
+    
+    username = input('Enter username of trainer you would like to delete: ')
+
+    user_exist = False # check if username exist. Right now this is set to false
+
+    with open('database.txt','w') as file:
+        
+        for line in lines:
+            stored_user_type, stored_username, stored_password = line.strip().split(':')
+            
+            if username == stored_username and stored_user_type == 'trainer':
+                line.rstrip()
+                user_exist = True # user exist set to true as username input same as store_username in database
+            
+            else:
+                file.write(line)
+    
+    with open ('trainer_module.txt','r') as file:
+        lines = file.readlines()
+        file.close()
+        
+    with open('trainer_module.txt','w') as file:
+        
+        for line in lines:
+            stored_user_type, stored_username, stored_level, stored_modules = line.strip().split(':')
+            
+            if username == stored_username and stored_user_type == 'trainer':
+                line.rstrip()
+                user_exist = True # user exist set to true as username input same as store_username in database
+            
+            else:
+                file.write(line)
+    
+    if user_exist: #when user_exist is true username deleted
+        print(f'Trainer {username} has been deleted.')
+    
+    else:
+        print(f'This trainer does not exist.')
+        delete_trainer()
+
+def assign_levelmodule():
+    username = input('Enter username of trainer: ')
+     
+    option = input('''
+What level are they teaching? 
+1. Beginner
+2. Intermediate
+3. Advance
+Enter a number: ''')
+    
+    if option == '1':
+        level = 'Beginner'
+    elif option == '2':
+        level = 'Intermediate'
+    elif option == '3':
+        level = 'Advance'
+    else:
+        print('Enter a valid number: ')
+        assign_levelmodule()
+    
+    modules_input = input("Enter module name (separated by comma ',' ): ")
+    modules = [module.strip() for module in modules_input.split(',')]
+    
+    trainer_exist = False
+
+    with open ('trainer_module.txt','r') as file:
+        lines = file.readlines()
+        file.close()
+    
+    with open ('trainer_module.txt','w') as file:
+        for line in lines:
+            stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
+            
+            if username == stored_username and stored_user_type == 'trainer':
+                trainer_exist = True
+                
+                updated_modules = f'trainer:{username}:{level}:{",".join(modules)}\n'
+                file.write(updated_modules)
+                
+            else:
+                file.write(line)
+
+    if not trainer_exist:
+        print(f'Trainer does not exist.')
+        assign_levelmodule()
+    else:
+        print(f'Trainer {username} has been assigned to teaching {level} {modules}.')
+    
+assign_levelmodule()
