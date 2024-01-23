@@ -113,7 +113,7 @@ def register_trainer():
         file.close()
     
     with open('trainer_module.txt','a') as file:
-        file.write(f'{user_type}:{username}\n')
+        file.write(f'{user_type}:{username}:level:module\n')
                 
     print(f'\n{user_type} {username} registered successfully.')
       
@@ -209,4 +209,4 @@ Enter a number: ''')
     else:
         print(f'Trainer {username} has been assigned to teaching {level} {modules}.')
     
-assign_levelmodule()
+login()

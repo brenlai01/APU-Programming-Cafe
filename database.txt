@@ -1,2 +1,3 @@
 admin:admin1:asdasd
-trainer:bren:asdasd
+trainer:trainer2:asdasd
+trainer:trainer1:asdasd
