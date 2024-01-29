@@ -1,2 +1,4 @@
-trainer:trainer2:Advance:Java,Python
-trainer:trainer1:Advance:Python,Java,C#
+trainer:trainer2:Beginner:Python,Java,SQL
+trainer:trainer1:Advance:Java
+trainer:bren1:Intermediate:Python,C#,SQL
+trainer:luwit:Beginner:Python,Java

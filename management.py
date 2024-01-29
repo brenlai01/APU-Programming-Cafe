@@ -183,9 +183,18 @@ Enter a number: ''')
         print('Enter a valid number: ')
         assign_levelmodule()
     
-    modules_input = input("Enter module name (separated by comma ',' ): ")
-    modules = [module.strip() for module in modules_input.split(',')]
+    available_modules = ['Python','Java','SQL','C#','C++']
+    print(f'Available modules: {available_modules}')
+
+    while True:
+        modules_input = input('Enter modules (comma-separated, max 5): ')
+        selected_modules = [module.strip() for module in modules_input.split(',')]
     
+        if all(module in available_modules for module in selected_modules) and len(selected_modules) <= 5:
+            break
+        else:
+            print('Invalid modules. Please select from the available options.')
+
     trainer_exist = False
 
     with open ('trainer_module.txt','r') as file:
@@ -199,16 +208,60 @@ Enter a number: ''')
             if username == stored_username and stored_user_type == 'trainer':
                 trainer_exist = True
                 
-                updated_modules = f'trainer:{username}:{level}:{",".join(modules)}\n'
+                updated_modules = f'trainer:{username}:{level}:{",".join(selected_modules)}\n'
                 file.write(updated_modules)
                 
             else:
                 file.write(line)
+                
 
-    if not trainer_exist:
+    if trainer_exist:
+        print(f'Trainer {username} has been assigned to teaching {level} {selected_modules}.')
+        file.close()
+    else:
         print(f'Trainer does not exist.')
         assign_levelmodule()
-    else:
-        print(f'Trainer {username} has been assigned to teaching {level} {modules}.')
+
+def view_income():
+
+    username = input('Enter username of trainer: ')
+    level_rates = {
+        'Beginner': 1.0,
+        'Intermediate': 1.5,
+        'Advance': 2.0
+    }
+    module_rate = 100
     
+    with open('trainer_module.txt','r') as file:
+        lines = file.readlines()
+        
+    trainer_exist = False
+
+    for line in lines:
+        stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':') # assign values from line
+
+        if username == stored_username and stored_user_type == 'trainer':
+            modules_num = len([module.strip() for module in stored_module.split(',')])
+            trainer_exist = True
+
+            if stored_level in level_rates:
+                trainer_income = level_rates[stored_level] * module_rate * modules_num
+                print(f'''
+Trainer : {username}
+Modules : {stored_module}
+Level   : {stored_level}
+Income  : {trainer_income}''')        
+                break
+            
+            
+            
+    if not trainer_exist:
+        print('Trainer does not exist.')
+        view_income()
+
+    
+    menu_admin()
+
+    
+
 login()
