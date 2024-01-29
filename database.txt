@@ -1,3 +1,5 @@
 admin:admin1:asdasd
 trainer:trainer2:asdasd
 trainer:trainer1:asdasd
+trainer:bren1:asdasd
+trainer:luwit:asdasd
