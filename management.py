@@ -1,37 +1,39 @@
 
 def login():
-    max_attempts = 3
-    login_attempts = 0
+    # max_attempts = 3
+    # login_attempts = 0
 
-    while max_attempts > login_attempts:
-        username = input('Enter username: ')
-        password = input('Enter password: ')
+    # while max_attempts > login_attempts:
+        # username = input('Enter username: ')
+        # password = input('Enter password: ')
 
         with open('database.txt', 'r') as file:
             lines = file.readlines()
+            print(lines)
             file.close()
 
         for line in lines:
             stored_user_type, stored_username, stored_password = line.strip().split(':')
-            if username == stored_username and password == stored_password:
-                print(f'\nLogin successful! Welcome, {stored_user_type} {stored_username}.')
-                if stored_user_type == 'admin':
-                    menu_admin()
-                elif stored_user_type == 'trainer':
-                    menu_trainer()
-                elif stored_user_type == 'lecturer':
-                    menu_lecturer()
-                elif stored_user_type == 'student':
-                    menu_student()
-                return
+            print(stored_user_type, stored_username, stored_password)
+        #     if username == stored_username and password == stored_password:
+        #         print(f'\nLogin successful! Welcome, {stored_user_type} {stored_username}.')
+        #         if stored_user_type == 'admin':
+        #             menu_admin()
+        #         elif stored_user_type == 'trainer':
+        #             menu_trainer()
+        #         elif stored_user_type == 'lecturer':
+        #             menu_lecturer()
+        #         elif stored_user_type == 'student':
+        #             menu_student()
+        #         return
 
-        login_attempts += 1
+        # login_attempts += 1
 
-        if login_attempts < max_attempts:
-            print(f'\nLogin failed. Please check your username and password. Attempt {login_attempts} of {max_attempts}.\n')
-        else:
-            print('\nAccount locked. Too many failed login attempts. Please contact an admin.')
-            return
+        # if login_attempts < max_attempts:
+        #     print(f'\nLogin failed. Please check your username and password. Attempt {login_attempts} of {max_attempts}.\n')
+        # else:
+        #     print('\nAccount locked. Too many failed login attempts. Please contact an admin.')
+        #     return
 
 def logout():
     print('You have successfully logged out.')
