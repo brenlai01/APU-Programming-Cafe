@@ -354,10 +354,8 @@ Enter number: ''')
 def add_classinfo(current_trainer):
     with open('trainer_module.txt','r') as file:
         lines = file.readlines()
-        for line in lines:
-            stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
-            if stored_username == current_trainer:
-                print(stored_level,stored_module)
+
+    with open('class_info.txt','a')
 
 
 
@@ -365,13 +363,13 @@ def add_classinfo(current_trainer):
 
 
 
-# add_classinfo(current_trainer='trainer2')
+add_classinfo(current_trainer='bren')
 
 
 
 
 
-login()
+# login()
 
 
 
