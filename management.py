@@ -9,7 +9,6 @@ def login():
 
         with open('database.txt', 'r') as file:
             lines = file.readlines()
-            print(lines)
             file.close()
 
         for line in lines:
@@ -19,14 +18,18 @@ def login():
                 print(f'\nLogin successful! Welcome, {stored_user_type} {stored_username}.')
                 if stored_user_type == 'admin':
                     menu_admin()
+    
                 elif stored_user_type == 'trainer':
-                    menu_trainer()
+                    menu_trainer(username)
+                    
                 elif stored_user_type == 'lecturer':
-                    menu_lecturer()
-                elif stored_user_type == 'student':
-                    menu_student()
-                return
+                    menu_lecturer(username)
 
+                elif stored_user_type == 'student':
+                    menu_student(username)
+
+                return
+            
         login_attempts += 1
 
         if login_attempts < max_attempts:
@@ -46,8 +49,9 @@ Operations:
 2. Delete trainer
 3. Assign trainer to respective level
 4. View monthly income
-5. Update profile
-6. Logout
+5. View trainer feedback
+6. Update profile
+7. Logout
 Select a number: ''')
     
     if option == '1':
@@ -69,19 +73,54 @@ Select a number: ''')
         menu_admin()
     
     elif option == '5':
-        update_profile()
+        feedback()
         menu_admin()
 
     elif option == '6':
+        update_profile()
+        menu_admin()
+
+    elif option == '7':
         logout()
     
     else:
         print('Please enter a valid number')
         menu_admin()
 
-def menu_trainer():
-    print('you are a trainer.')
-    pass
+def menu_trainer(username): #username entered will identify which trainer it is
+    current_trainer = username
+    option = input('''
+Operations:
+1. Add class info
+2. update class info
+3. View students
+4. Send feedback to admin
+5. Update profile
+6. Logout
+Select a number: ''')
+    if option == '1':
+        add_classinfo()
+
+    elif option == '2':
+        update_classinfo()
+
+    elif option == '3':
+        view_student()
+
+    elif option == '4':
+        send_feedback(current_trainer)
+        menu_trainer(current_trainer)
+
+    elif option == '5':
+        update_profile()
+        menu_trainer()
+    
+    elif option == '6':
+        logout()
+    
+    else:
+        print('Enter a valid number')
+        menu_trainer()
     
 def menu_lecturer():
     print('you are a trainer.')
@@ -98,7 +137,7 @@ def register_trainer():
     
     with open('database.txt','r') as file: #open file read by line and makes a list
         lines = file.readlines()
-        file.close()
+        
         
     for line in lines:
         stored_user_type, stored_username, stored_password = line.strip().split(':') 
@@ -112,17 +151,18 @@ def register_trainer():
 
     with open('database.txt', 'a') as file:
         file.write(f'{user_type}:{username}:{password}\n')
-        file.close()
+        
     
     with open('trainer_module.txt','a') as file:
         file.write(f'{user_type}:{username}:level:module\n')
+
                 
     print(f'\n{user_type} {username} registered successfully.')
       
 def delete_trainer():
     with open('database.txt','r') as file:
         lines = file.readlines()
-        file.close()
+        
     
     username = input('Enter username of trainer you would like to delete: ')
 
@@ -142,7 +182,7 @@ def delete_trainer():
     
     with open ('trainer_module.txt','r') as file:
         lines = file.readlines()
-        file.close()
+        
         
     with open('trainer_module.txt','w') as file:
         
@@ -155,6 +195,7 @@ def delete_trainer():
             
             else:
                 file.write(line)
+
     
     if user_exist: #when user_exist is true username deleted
         print(f'Trainer {username} has been deleted.')
@@ -214,7 +255,6 @@ Enter a number: ''')
             else:
                 file.write(line)
                 
-
     if trainer_exist:
         print(f'Trainer {username} has been assigned to teaching {level} {selected_modules}.')
         file.close()
@@ -262,6 +302,77 @@ Income  : {trainer_income}''')
     
     menu_admin()
 
+def send_feedback(current_trainer): #current trainer as parameter so the func knows which trainer it is
+    feedback = input('Enter message: ')
+
+    with open('feedback.txt','a') as file:
+        file.write(f'{current_trainer}:{feedback}\n')
+
+def feedback():
+    with open('feedback.txt','r') as file:
+        lines = file.readlines()
+
+    option = input('''
+1. View feedback
+2. Delete feedback
+3. Back to menu
+Enter number: ''')
     
+    if option == '1':
+        for line in lines:
+            stored_trainer_username, stored_feedback_message = line.strip().split(':')
+            print(f'{stored_trainer_username}:{stored_feedback_message}')
+        feedback()
+
+    elif option == '2':
+        trainer_exist = False
+        trainer_username = input('Enter trainer username: ')
+        with open ('feedback.txt','w') as file:
+            for line in lines:
+                stored_trainer_username, stored_feedback_message = line.strip().split(':')
+                
+                if trainer_username == stored_trainer_username:
+                    line.rstrip()
+                    trainer_exist = True
+                
+                else:
+                    file.write(line)
+        
+        if trainer_exist:
+            print(f'Feedback of {trainer_username} has been deleted.')
+            menu_admin()
+        else:
+            print('Trainer does not exist.')
+            feedback()
+    elif option == '3':
+        menu_admin()
+    
+    else:
+        print('Enter a valid number.')
+        feedback()
+
+def add_classinfo(current_trainer):
+    with open('trainer_module.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
+            if stored_username == current_trainer:
+                print(stored_level,stored_module)
+
+
+
+
+
+
+
+# add_classinfo(current_trainer='trainer2')
+
+
+
+
 
 login()
+
+
+
+
