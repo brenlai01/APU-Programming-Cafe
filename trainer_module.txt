@@ -1,2 +1,2 @@
-trainer:trainer1:Intermediate:C++
-trainer:bren:Intermediate:Python,Java
+trainer:luwit:Beginner:Python,Java
+trainer:dummy:Intermediate:Java,SQL,Python

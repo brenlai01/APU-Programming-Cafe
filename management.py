@@ -104,7 +104,7 @@ Operations:
 6. Logout
 Select a number: ''')
     if option == '1':
-        add_classinfo()
+        class_info(username)
         print('\nWhat else would you like to do today?')
         menu_trainer(username)
 
@@ -162,18 +162,15 @@ def register_trainer():
             username = input('Trainer username: ')
             password = input('Trainer password: ')
 
-    with open('database.txt', 'a') as file:
+    with open('database.txt', 'a') as file: #append new trainer to database.txt for login
         file.write(f'{user_type}:{username}:{password}\n')
         
     
-    with open('trainer_module.txt','a') as file:
+    with open('trainer_module.txt','a') as file: #append new trainer to trainer.txt to assign modules
         file.write(f'{user_type}:{username}:level:module\n')
 
-    with open('profile.txt','a') as file:
+    with open('profile.txt','a') as file: #append new trainer to profile.txt for update profile func
         file.write(f'{username}:name:jobtitle:email:contact\n')
-        
-    with open('class_info.txt','a') as file:
-        file.write(f'{username}:')
                 
     print(f'\n{user_type} {username} registered successfully.')
       
@@ -184,13 +181,40 @@ def delete_trainer():
     
     username = input('Enter username of trainer you would like to delete: ')
 
-    user_exist = False # check if username exist. Right now this is set to false
+    user_exist = False # A flag to see if user exist now set as false
 
-    with open('database.txt','w') as file:
+    with open('database.txt','w') as file: #remove trainer from database.txt for login
         
         for line in lines:
             stored_user_type, stored_username, stored_password = line.strip().split(':')
             
+            if username == stored_username and stored_user_type == 'trainer':
+                line.rstrip()
+                user_exist = True # sets flag to true when username input matches stored username
+            else:
+                file.write(line)
+    
+    with open ('trainer_module.txt','r') as file: #remove trainer from trainer_module.txt
+        lines = file.readlines()
+            
+    with open('trainer_module.txt','w') as file:
+        for line in lines:
+            stored_user_type, stored_username, stored_level, stored_modules = line.strip().split(':')
+            
+            if username == stored_username and stored_user_type == 'trainer':
+                line.rstrip()
+                user_exist = True # sets flag to true when username input matches stored username
+            
+            else:
+                file.write(line)
+
+    with open('profile.txt','r') as file: 
+        lines = file.readlines()
+
+    with open('profile.txt','w') as file: #remove trainer from profile.txt
+        for line in lines:
+            stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
+             
             if username == stored_username and stored_user_type == 'trainer':
                 line.rstrip()
                 user_exist = True # user exist set to true as username input same as store_username in database
@@ -198,27 +222,12 @@ def delete_trainer():
             else:
                 file.write(line)
     
-    with open ('trainer_module.txt','r') as file:
-        lines = file.readlines()
-        
-        
-    with open('trainer_module.txt','w') as file:
-        for line in lines:
-            stored_user_type, stored_username, stored_level, stored_modules = line.strip().split(':')
-            
-            if username == stored_username and stored_user_type == 'trainer':
-                line.rstrip()
-                user_exist = True # user exist set to true as username input same as store_username in database
-            
-            else:
-                file.write(line)
-
-    with open('profile.txt','r') as file:
+    with open('class_info.txt','r') as file:
         lines = file.readlines()
 
-    with open('profile.txt','w') as file:
+    with open('class_info.txt','w') as file: #remove trainer from class_info.txt
         for line in lines:
-            stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
+            stored_username, stored_module, stored_fee, stored_schedule = line.strip().split(':')
              
             if username == stored_username and stored_user_type == 'trainer':
                 line.rstrip()
@@ -236,14 +245,25 @@ def delete_trainer():
 
 def assign_levelmodule():
     username = input('Enter username of trainer: ')
-     
+
+    # Check if the trainer exists
+    with open('trainer_module.txt', 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
+            if username == stored_username and stored_user_type == 'trainer':
+                break
+        else:
+            print(f'Trainer {username} does not exist.')
+            return assign_levelmodule()
+
     option = input('''
 What level are they teaching? 
 1. Beginner
 2. Intermediate
 3. Advance
 Enter a number: ''')
-    
+
     if option == '1':
         level = 'Beginner'
     elif option == '2':
@@ -251,46 +271,45 @@ Enter a number: ''')
     elif option == '3':
         level = 'Advance'
     else:
-        print('Enter a valid number: ')
-        assign_levelmodule()
-    
-    available_modules = ['Python','Java','SQL','C#','C++']
+        print('Enter a valid number.')
+        return
+
+    available_modules = ['Python', 'Java', 'SQL', 'C#', 'C++']
     print(f'Available modules: {available_modules}')
 
-    while True:
+    #makes sure module are in list and less than five
+    while True: 
         modules_input = input('Enter modules (comma-separated, max 5): ')
         selected_modules = [module.strip() for module in modules_input.split(',')]
-    
+
         if all(module in available_modules for module in selected_modules) and len(selected_modules) <= 5:
             break
         else:
             print('Invalid modules. Please select from the available options.')
+            return
 
-    trainer_exist = False
-
-    with open ('trainer_module.txt','r') as file:
+    with open('trainer_module.txt', 'r') as file:
         lines = file.readlines()
-        file.close()
-    
-    with open ('trainer_module.txt','w') as file:
+
+    #overwrites default values in trainer_module with new inputs from admin
+    with open('trainer_module.txt', 'w') as file:
         for line in lines:
             stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
-            
+
             if username == stored_username and stored_user_type == 'trainer':
-                trainer_exist = True
-                
+                # Update existing modules if they exist
+                existing_modules = [module.strip() for module in stored_module.split(',')]
                 updated_modules = f'trainer:{username}:{level}:{",".join(selected_modules)}\n'
                 file.write(updated_modules)
-                
             else:
                 file.write(line)
-                
-    if trainer_exist:
-        print(f'Trainer {username} has been assigned to teaching {level} {selected_modules}.')
-        file.close()
-    else:
-        print(f'Trainer does not exist.')
-        assign_levelmodule()
+
+    # Append to 'class_info.txt' only if the trainer exists
+    with open('class_info.txt', 'a') as file:
+        for module in selected_modules:
+            file.write(f'{username}:{module}:fee:schedule\n')
+
+    print(f'Trainer {username} has been assigned to teach {level} {selected_modules}.')
 
 def view_income():
 
@@ -340,6 +359,7 @@ def feedback(username):
         lines = file.readlines()
 
     option = input('''
+Operations
 1. View feedback
 2. Delete feedback
 3. Back to menu
@@ -378,106 +398,141 @@ Enter number: ''')
         print('Enter a valid number.')
         feedback(username)
 
-# def add_classinfo(username):
-#     with open('trainer_module.txt','r') as file:
-#         lines = file.readlines()
-#         for line in lines:
-#             stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
-#             # print(stored_user_type, stored_username, stored_level, stored_module)
-
-#     if username == stored_username:
-
-#         with open('class_info.txt','a') as file:
-
-        
-
-#     with open('class_info.txt','a') as file:
-
-
-# add_classinfo()
-
 def update_profile(username):
+    while True:
+        option = input('''
+    Operations
+    1. Name
+    2. Title
+    3. Email
+    4. Contact
+    5. Exit
+    Enter a number: ''')
+
+
+        with open('profile.txt','r') as file:
+            lines = file.readlines()
+            for line in lines:
+                stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
+        if username == stored_username:
+
+            print(f'''
+    Name: {stored_name}
+    Title: {stored_jobtitle}
+    Email: {stored_email}
+    Contact: {stored_contact}''')
+                    
+        if option == '1':
+            with open('profile.txt','w') as file:
+                for line in lines:
+                    stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
+                    if username == stored_username:
+                        new_name = input('Enter name: ')
+                        updated_profile = f'{stored_username}:{new_name}:{stored_jobtitle}:{stored_email}:{stored_contact}\n'
+                        print(f"Name has been updated to '{new_name}'.")
+                        file.write(updated_profile)
+                        
+                    else:
+                        file.write(line)
+
+        elif option == '2':
+            with open('profile.txt','w') as file:
+                for line in lines:
+                    stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
+                    if username == stored_username:
+                        new_jobtitle = input('Enter job title: ')
+                        updated_profile = f'{stored_username}:{stored_name}:{new_jobtitle}:{stored_email}:{stored_contact}\n'
+                        print(f"Job title has been updated to '{new_jobtitle}'.")
+                        file.write(updated_profile)
+                    
+                    else:
+                        file.write(line)
+
+        elif option == '3':
+            with open('profile.txt','w') as file:
+                for line in lines:
+                    stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
+                    if username == stored_username:
+                        new_email = input('Enter email: ')
+                        updated_profile = f'{stored_username}:{stored_name}:{stored_jobtitle}:{new_email}:{stored_contact}\n'
+                        print(f"Email has been updated to '{new_email}'.")
+                        file.write(updated_profile)
+                        
+                    else:
+                        file.write(line)
+
+        elif option == '4':
+            with open('profile.txt','w') as file:
+                for line in lines:
+                    stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
+                    if username == stored_username:
+                        new_contact = input('Enter phone number: ')
+                        updated_profile = f'{stored_username}:{stored_name}:{stored_jobtitle}:{stored_email}:{new_contact}\n'
+                        print(f"Contact has been updated to '{new_contact}'.")
+                        file.write(updated_profile)
+                        
+                    else:
+                        file.write(line)
+        elif option == '5':
+            print("Exiting profile update.")
+            break
+
+        else:
+            print('Enter a valid number.')
+
+def class_info(username):
+    with open('trainer_module.txt', 'r') as file:
+        for line in file:
+            stored_usertype, stored_username, stored_level, stored_modules = line.strip().split(':')
+            if username == stored_username:
+                available_modules = [module.strip() for module in stored_modules.split(',')]
+                print(f'''
+Level:{stored_level}
+Your modules:{stored_modules}''')
+                break
+
+    module_input = input(f'Select module to update ({stored_modules}): ')
+    
+    if module_input not in available_modules:
+        print('Invalid module selection. Please choose from the available modules.')
+        return class_info(username)
+    
     option = input('''
-What would you like to update?
-1. Name
-2. Title
-3. Email
-4. Contact
-5. Exit
-Enter a number: ''')
-
-
-    with open('profile.txt','r') as file:
+Operations
+1. Class fee
+2. Class schedule
+3. Exit
+Select a number: ''')
+    
+    with open('class_info.txt','r') as file:
         lines = file.readlines()
-        for line in lines:
-            stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
-    if username == stored_username:
 
-        print(f'''
-Name: {stored_name}
-Title: {stored_jobtitle}
-Email: {stored_email}
-Contact: {stored_contact}''')
-                
     if option == '1':
-        with open('profile.txt','w') as file:
+        with open('class_info.txt', 'w') as file:
             for line in lines:
-                stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
-                if username == stored_username:
-                    new_name = input('Enter name: ')
-                    updated_profile = f'{stored_username}:{new_name}:{stored_jobtitle}:{stored_email}:{stored_contact}\n'
-                    print(f"Name has been updated to '{new_name}'.")
-                    file.write(updated_profile)
-                    
+                stored_username, stored_module, stored_fee, stored_schedule = line.strip().split(':')
+                if username == stored_username and module_input == stored_module:
+                    new_fee = input('Enter new fee: ')
+                    updated_classfee = f'{stored_username}:{stored_module}:{new_fee}:{stored_schedule}\n'
+                    file.write(updated_classfee)
+                    print(f'Class fee has been updated from [{stored_fee}] to [{new_fee}]')
+                else:
+                    file.write(line)
+    
+    if option == '2':
+        with open('class_info.txt', 'w') as file:
+            for line in lines:
+                stored_username, stored_module, stored_fee, stored_schedule = line.strip().split(':')
+                if username == stored_username and module_input == stored_module:
+                    class_day = input('Enter day: ')
+                    class_time = input('Enter time: ')
+                    new_schedule = f'{class_day},{class_time}'
+                    updated_classfee = f'{stored_username}:{stored_module}:{stored_fee}:{new_schedule}\n'
+                    file.write(updated_classfee)
                 else:
                     file.write(line)
 
-    elif option == '2':
-        with open('profile.txt','w') as file:
-            for line in lines:
-                stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
-                if username == stored_username:
-                    new_jobtitle = input('Enter job title: ')
-                    updated_profile = f'{stored_username}:{stored_name}:{new_jobtitle}:{stored_email}:{stored_contact}\n'
-                    print(f"Job title has been updated to '{new_jobtitle}'.")
-                    file.write(updated_profile)
-                   
-                else:
-                    file.write(line)
 
-    elif option == '3':
-        with open('profile.txt','w') as file:
-            for line in lines:
-                stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
-                if username == stored_username:
-                    new_email = input('Enter email: ')
-                    updated_profile = f'{stored_username}:{stored_name}:{stored_jobtitle}:{new_email}:{stored_contact}\n'
-                    print(f"Email has been updated to '{new_email}'.")
-                    file.write(updated_profile)
-                    
-                else:
-                    file.write(line)
+            
 
-    elif option == '4':
-        with open('profile.txt','w') as file:
-            for line in lines:
-                stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
-                if username == stored_username:
-                    new_contact = input('Enter phone number: ')
-                    updated_profile = f'{stored_username}:{stored_name}:{stored_jobtitle}:{stored_email}:{new_contact}\n'
-                    print(f"Contact has been updated to '{new_contact}'.")
-                    file.write(updated_profile)
-                    
-                else:
-                    file.write(line)
-    elif option == '5':
-        update_profile(username)
-
-    else:
-        print('Enter a valid number.')
-        update_profile(username)
-
-# login()
-
-
-
+login()

@@ -1,1 +1,5 @@
-trainer1:bren:
+luwit:Python:fee:schedule
+luwit:Java:200:schedule
+dummy:Java:500:Monday,1pm
+dummy:SQL:fee:schedule
+dummy:Python:200:schedule
