@@ -171,6 +171,9 @@ def register_trainer():
 
     with open('profile.txt','a') as file:
         file.write(f'{username}:name:jobtitle:email:contact\n')
+        
+    with open('class_info.txt','a') as file:
+        file.write(f'{username}:')
                 
     print(f'\n{user_type} {username} registered successfully.')
       
@@ -207,8 +210,8 @@ def delete_trainer():
                 line.rstrip()
                 user_exist = True # user exist set to true as username input same as store_username in database
             
-            else:
-                file.write(line)
+            # else:
+            #     file.write(line)
 
     with open('profile.txt','r') as file:
         lines = file.readlines()

@@ -1,5 +1,1 @@
 admin:admin1:asdasd
-trainer:bren:asdasd
-trainer:luwit:asdasd
-trainer:trainer1:asdasd
-trainer:bruh123:asdasd
