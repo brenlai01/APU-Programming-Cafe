@@ -210,8 +210,8 @@ def delete_trainer():
                 line.rstrip()
                 user_exist = True # user exist set to true as username input same as store_username in database
             
-            # else:
-            #     file.write(line)
+            else:
+                file.write(line)
 
     with open('profile.txt','r') as file:
         lines = file.readlines()
@@ -378,13 +378,23 @@ Enter number: ''')
         print('Enter a valid number.')
         feedback(username)
 
-def add_classinfo(current_trainer):
-    with open('trainer_module.txt','r') as file:
-        lines = file.readlines()
+# def add_classinfo(username):
+#     with open('trainer_module.txt','r') as file:
+#         lines = file.readlines()
+#         for line in lines:
+#             stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
+#             # print(stored_user_type, stored_username, stored_level, stored_module)
 
-    # with open('class_info.txt','a')
+#     if username == stored_username:
 
-# add_classinfo(current_trainer='bren')
+#         with open('class_info.txt','a') as file:
+
+        
+
+#     with open('class_info.txt','a') as file:
+
+
+# add_classinfo()
 
 def update_profile(username):
     option = input('''
@@ -401,9 +411,10 @@ Enter a number: ''')
         lines = file.readlines()
         for line in lines:
             stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
-            if username == stored_username:
-                print(f'''
-Name: {stored_username}
+    if username == stored_username:
+
+        print(f'''
+Name: {stored_name}
 Title: {stored_jobtitle}
 Email: {stored_email}
 Contact: {stored_contact}''')
@@ -466,7 +477,7 @@ Contact: {stored_contact}''')
         print('Enter a valid number.')
         update_profile(username)
 
-login()
+# login()
 
 
 
