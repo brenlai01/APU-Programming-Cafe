@@ -96,20 +96,20 @@ def menu_trainer(username): #username entered will identify which trainer it is
     
     option = input('''
 Operations:
-1. Add class info
-2. update class info
+1. Update class info
+2. Delete class info
 3. View students
 4. Send feedback to admin
 5. Update profile
 6. Logout
 Select a number: ''')
     if option == '1':
-        class_info(username)
+        update_classinfo(username)
         print('\nWhat else would you like to do today?')
         menu_trainer(username)
 
     elif option == '2':
-        update_classinfo(username)
+        delete_classinfo(username)
         print('\nWhat else would you like to do today?')
         menu_trainer(username)
 
@@ -368,7 +368,7 @@ Enter number: ''')
     if option == '1':
         for line in lines:
             stored_trainer_username, stored_feedback_message = line.strip().split(':')
-            print(f'{stored_trainer_username}:{stored_feedback_message}')
+            print(f'{stored_trainer_username}:{stored_feedback_message}\n')
         feedback(username)
 
     elif option == '2':
@@ -400,28 +400,28 @@ Enter number: ''')
 
 def update_profile(username):
     while True:
-        option = input('''
-    Operations
-    1. Name
-    2. Title
-    3. Email
-    4. Contact
-    5. Exit
-    Enter a number: ''')
-
-
         with open('profile.txt','r') as file:
             lines = file.readlines()
             for line in lines:
                 stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
-        if username == stored_username:
-
-            print(f'''
-    Name: {stored_name}
-    Title: {stored_jobtitle}
-    Email: {stored_email}
-    Contact: {stored_contact}''')
+                if username == stored_username:
+                    print(f'''
+Profile
+Name: {stored_name}
+Title: {stored_jobtitle}
+Email: {stored_email}
+Contact: {stored_contact}''')
+                    break
                     
+        option = input('''
+Operations
+1. Name
+2. Title
+3. Email
+4. Contact
+5. Exit
+Enter a number: ''')
+          
         if option == '1':
             with open('profile.txt','w') as file:
                 for line in lines:
@@ -480,7 +480,7 @@ def update_profile(username):
         else:
             print('Enter a valid number.')
 
-def class_info(username):
+def update_classinfo(username):
     with open('trainer_module.txt', 'r') as file:
         for line in file:
             stored_usertype, stored_username, stored_level, stored_modules = line.strip().split(':')
@@ -495,7 +495,20 @@ Your modules:{stored_modules}''')
     
     if module_input not in available_modules:
         print('Invalid module selection. Please choose from the available modules.')
-        return class_info(username)
+        return update_classinfo(username)
+    
+    with open('class_info.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_username, stored_module, stored_fee, stored_schedule = line.strip().split(':')
+            if username == stored_username and module_input == stored_module:
+                print(f'''
+Name: {stored_username}
+Level: {stored_level}
+Module: {stored_module}
+Fee: {stored_fee}
+Schedule: {stored_schedule}''')
+                break
     
     option = input('''
 Operations
@@ -519,7 +532,7 @@ Select a number: ''')
                 else:
                     file.write(line)
     
-    if option == '2':
+    elif option == '2':
         with open('class_info.txt', 'w') as file:
             for line in lines:
                 stored_username, stored_module, stored_fee, stored_schedule = line.strip().split(':')
@@ -529,10 +542,16 @@ Select a number: ''')
                     new_schedule = f'{class_day},{class_time}'
                     updated_classfee = f'{stored_username}:{stored_module}:{stored_fee}:{new_schedule}\n'
                     file.write(updated_classfee)
+                    print(f'Class schedule has been updated from [{stored_schedule}] to [{new_schedule}]')
                 else:
                     file.write(line)
 
+    elif option == '3':
+        menu_trainer(username)
 
+    else:
+        print('Enter a valid number.')
+        update_classinfo(username)
             
 
 login()

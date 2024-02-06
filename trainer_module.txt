@@ -1,2 +1,3 @@
 trainer:luwit:Beginner:Python,Java
 trainer:dummy:Intermediate:Java,SQL,Python
+trainer:bruhtrainer1:Beginner:C#
