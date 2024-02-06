@@ -1,4 +1,4 @@
 admin:admin1:asdasd
+trainer:bren:asdas
 trainer:luwit:asdasd
-trainer:dummy:asdasd
-trainer:bruhtrainer1:asdasd
+student:bren01:asdasd

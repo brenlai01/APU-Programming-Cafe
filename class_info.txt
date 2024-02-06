@@ -1,6 +1,3 @@
-luwit:Python:500:schedule
-luwit:Java:500:Tuesday,3pm
-dummy:Java:500:Monday,1pm
-dummy:SQL:500:Friday,1pm
-dummy:Python:200:schedule
-bruhtrainer1:C#:200:Monday,2pm
+bren:Intermediate:Java:fee:schedule:studentnum
+bren:Intermediate:SQL:fee:schedule:studentnum
+luwit:Intermediate:Java:fee:schedule:studentnum

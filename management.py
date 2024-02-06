@@ -307,7 +307,7 @@ Enter a number: ''')
     # Append to 'class_info.txt' only if the trainer exists
     with open('class_info.txt', 'a') as file:
         for module in selected_modules:
-            file.write(f'{username}:{module}:fee:schedule\n')
+            file.write(f'{username}:{level}:{module}:fee:schedule:studentnum\n')
 
     print(f'Trainer {username} has been assigned to teach {level} {selected_modules}.')
 
@@ -500,7 +500,7 @@ Your modules:{stored_modules}''')
     with open('class_info.txt','r') as file:
         lines = file.readlines()
         for line in lines:
-            stored_username, stored_module, stored_fee, stored_schedule = line.strip().split(':')
+            stored_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
             if username == stored_username and module_input == stored_module:
                 print(f'''
 Name: {stored_username}
@@ -523,10 +523,10 @@ Select a number: ''')
     if option == '1':
         with open('class_info.txt', 'w') as file:
             for line in lines:
-                stored_username, stored_module, stored_fee, stored_schedule = line.strip().split(':')
+                stored_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
                 if username == stored_username and module_input == stored_module:
                     new_fee = input('Enter new fee: ')
-                    updated_classfee = f'{stored_username}:{stored_module}:{new_fee}:{stored_schedule}\n'
+                    updated_classfee = f'{stored_username}:{stored_level}:{stored_module}:{new_fee}:{stored_schedule}:{student_num}\n'
                     file.write(updated_classfee)
                     print(f'Class fee has been updated from [{stored_fee}] to [{new_fee}]')
                 else:
@@ -535,12 +535,12 @@ Select a number: ''')
     elif option == '2':
         with open('class_info.txt', 'w') as file:
             for line in lines:
-                stored_username, stored_module, stored_fee, stored_schedule = line.strip().split(':')
+                stored_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
                 if username == stored_username and module_input == stored_module:
                     class_day = input('Enter day: ')
                     class_time = input('Enter time: ')
                     new_schedule = f'{class_day},{class_time}'
-                    updated_classfee = f'{stored_username}:{stored_module}:{stored_fee}:{new_schedule}\n'
+                    updated_classfee = f'{stored_username}:{stored_level}:{stored_module}:{stored_fee}:{new_schedule}:{student_num}\n'
                     file.write(updated_classfee)
                     print(f'Class schedule has been updated from [{stored_schedule}] to [{new_schedule}]')
                 else:
@@ -552,6 +552,61 @@ Select a number: ''')
     else:
         print('Enter a valid number.')
         update_classinfo(username)
-            
+                  
+def register_student():
+    student_name = input("Enter student's name: ")
+    student_name = student_name.capitalize()
+    student_username = input('Enter student username: ')
+    student_pw = input('Enter student password: ')
+    tp_num = input('Enter student TP number: ')
+    email = input('Enter student email: ')
+    contact = input('Enter student contact: ')
+    
+    with open('database.txt','a') as file:
+        file.write(f'student:{student_username}:{student_pw}')
 
-login()
+    with open('student_info.txt','a') as file:
+        file.write(f'{student_name}:{tp_num}:{email}:{contact}:module_level:module_name:moe')
+        print(f'Student {student_name} has been registered.')
+
+def enroll_student():
+    student_name = input('Enter student name: ')
+    student_exist = False
+    
+    with open('student_info.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_studentname, stored_tpnum, stored_email, stored_contact, stored_module_level, stored_module_name, stored_moe= line.strip().split(':')
+            if student_name == stored_studentname:
+                student_exist = True
+                print(stored_studentname, stored_tpnum, stored_email, stored_contact, stored_module_level, stored_module_name, stored_moe)
+
+    available_modules = ['Python','Java','SQL','C#','C++']
+    available_module_levels = ['Beginner','Intermediate','Advance']
+    module_name = input(f"Enter module name {available_modules}: ")
+    module_level = input(f'Enter module level {available_module_levels}: ')
+    
+    if module_name not in available_modules or module_level not in available_module_levels:
+        print('Enter valid module name or module level.') 
+        return enroll_student()
+    
+    available_trainers = []
+
+    with open('class_info.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
+            if module_level == stored_level and module_name == stored_module:
+                available_trainers.append(stored_trainer_username)
+    
+    chosen_trainer = input(f'''
+Available Trainers for {stored_level} {stored_module}:{available_trainers}
+Select a trainer: ''')
+
+
+
+enroll_student()
+
+# login()
+    
+# register_student()
