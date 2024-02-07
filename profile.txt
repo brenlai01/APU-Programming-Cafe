@@ -1,3 +1,5 @@
 admin1:Brendan:System Admin:email:contact
 bren:name:jobtitle:email:contact
 luwit:name:jobtitle:email:contact
+bren:Brendan:status:course:year
+henry01:Henry:status:course:year

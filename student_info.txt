@@ -1,1 +1,2 @@
-Brendan:012345:bren@mail.com:012345678:module_level:module_name:moe
+bren:Brendan:123123:bren@mail.com:012345678:June:modulepair;Intermediate,Java;Intermediate,SQL
+henry01:Henry:321312:henry@mail.com:012345678:March:modulepair

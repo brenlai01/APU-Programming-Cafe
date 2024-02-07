@@ -1,4 +1,6 @@
 admin:admin1:asdasd
+lecturer:lecturer1:asdasd
 trainer:bren:asdas
 trainer:luwit:asdasd
-student:bren01:asdasd
+student:bren:asdasd
+student:henry01:asdasd
