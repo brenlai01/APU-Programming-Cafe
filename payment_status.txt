@@ -1,0 +1,3 @@
+Brendan:Intermediate,Java:notpaid
+Brendan:Intermediate,SQL:notpaid
+Tom:Intermediate,SQL:notpaid

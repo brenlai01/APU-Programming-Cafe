@@ -312,41 +312,8 @@ Enter a number: ''')
     print(f'Trainer {username} has been assigned to teach {level} {selected_modules}.')
 
 def view_income():
-
-    username = input('Enter username of trainer: ')
-    level_rates = {
-        'Beginner': 1.0,
-        'Intermediate': 1.5,
-        'Advance': 2.0
-    }
-    module_rate = 100
+    pass
     
-    with open('trainer_module.txt','r') as file:
-        lines = file.readlines()
-        
-    trainer_exist = False
-
-    for line in lines:
-        stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':') # assign values from line
-
-        if username == stored_username and stored_user_type == 'trainer':
-            modules_num = len([module.strip() for module in stored_module.split(',')])
-            trainer_exist = True
-
-            if stored_level in level_rates:
-                trainer_income = level_rates[stored_level] * module_rate * modules_num
-                print(f'''
-Trainer : {username}
-Modules : {stored_module}
-Level   : {stored_level}
-Income  : {trainer_income}''')        
-                break
-            
-            
-            
-    if not trainer_exist:
-        print('Trainer does not exist.')
-        view_income()
 
 def send_feedback(username): #current trainer as parameter so the func knows which trainer it is
     feedback = input('Enter message: ')
@@ -659,6 +626,29 @@ Select a trainer: ''')
                         else:
                             file.write(line)
 
+                new_modulepairs = []
+                new_modulepairs.append(new_modulepair)
+
+                with open('student_info.txt','r') as file:
+                    lines = file.readlines()
+                    for line in lines:
+                        stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
+                        if student_name == stored_studentname:
+                            modulepairs = stored_modulepairs.strip().split(';')
+                            modulepairs.remove('modulepair')  # Assuming 'modulepair' is a placeholder or indicator for the start of module pairs
+                            new_modulepairs.extend(modulepairs)
+
+                existing_payment_status = set()
+                with open('payment_status.txt', 'r') as file:
+                    existing_payment_status = {line.strip() for line in file}
+
+                with open('payment_status.txt', 'a') as file:
+                    for modulepair in new_modulepairs:
+                        payment_status = f'{student_name}:{modulepair}:notpaid'
+                        if payment_status not in existing_payment_status:  # Check if the payment status is already present
+                            file.write(payment_status + '\n')
+                            existing_payment_status.add(payment_status)
+                    
                 print(f'Student {student_name} enrolled in {chosen_trainer} {module_level} {module_name} class.')
     
             else:
@@ -672,24 +662,3 @@ Select a trainer: ''')
 enroll_student()
 # register_student()
 # login()
-# student_name = input('name: ')
-# module_level = 'Beginner'
-# module_name = 'SQL'
-# moe = 'June'
-
-
-# with open('student_info.txt','r') as file: #updates existing stundent info
-#     lines = file.readlines()        
-#     for line in lines:
-#         stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
-#         if student_name == stored_studentname:
-#             stored_modulepair = stored_modulepairs.strip().split(';')
-#             print(stored_modulepair)
-#             new_modulepair = f'{module_level},{module_name}'
-#             print(new_modulepair)
-#             updated_modulepairs = f'{stored_modulepairs};{new_modulepair}'
-#             print(updated_modulepairs)
-#             print(f'{stored_username}:{student_name}:{stored_tpnum}:{stored_email}:{stored_contact}:{moe}:{updated_modulepairs}\n')
-        # else:
-        #     file.write(line)
-    
