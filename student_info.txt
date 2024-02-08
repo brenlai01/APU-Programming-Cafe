@@ -1,2 +1,2 @@
-bren01:Brendan:123123:bren@mail.com:012345678:June:modulepair;Intermediate,Java;Intermediate,SQL
-tom01:Tom:321321:tom@mail.com:012345678:June:modulepair;Intermediate,SQL
+bren01:Brendan:456456:bren@mail.com:012345678:June:modulepair;Intermediate,Java
+tom01:Tom:321321:tom@mail.com:012345678:May:modulepair;Intermediate,Java

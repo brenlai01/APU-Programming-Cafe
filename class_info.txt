@@ -1,3 +1,4 @@
-bren:Intermediate:Java:fee:schedule:students,Brendan
-bren:Intermediate:SQL:fee:schedule:students,Brendan,Tom
+bren:Intermediate:Java:fee:schedule:Brenda,Tom
+bren:Intermediate:SQL:fee:schedule:students
 luwit:Intermediate:Java:fee:schedule:students
+trainer1:Beginner:Python:fee:schedule:students

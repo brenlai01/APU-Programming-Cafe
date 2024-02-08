@@ -1,2 +1,3 @@
 trainer:bren:Intermediate:Java,SQL
 trainer:luwit:Intermediate:Java
+trainer:trainer1:Beginner:Python

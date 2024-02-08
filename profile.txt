@@ -3,3 +3,4 @@ bren:name:jobtitle:email:contact
 luwit:name:jobtitle:email:contact
 bren01:Brendan:status:course:year
 tom01:Tom:status:course:year
+trainer1:name:jobtitle:email:contact

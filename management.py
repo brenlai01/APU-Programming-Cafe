@@ -135,9 +135,55 @@ Select a number: ''')
         print('Enter a valid number')
         menu_trainer(username)
     
-def menu_lecturer():
-    print('you are a trainer.')
-    pass
+def menu_lecturer(username):
+        
+    option = input('''
+Operations:
+1. Register student
+2. Delete student
+3. Enroll student to module
+4. Unenroll student from module
+5. Approve student request
+6. Update profile
+7. Logout
+Select a number: ''')
+    
+    if option == '1':
+        register_student()
+        print('\nWhat else would you like to do today?')
+        menu_lecturer(username)
+            
+    elif option == '2':
+        delete_student()
+        print('\nWhat else would you like to do today?')
+        menu_lecturer(username)
+
+    elif option == '3':
+        enroll_student()
+        print('\nWhat else would you like to do today?')
+        menu_lecturer(username)
+
+    elif option == '4':
+        unenroll_student()
+        print('\nWhat else would you like to do today?')
+        menu_lecturer(username)
+    
+    elif option == '5':
+        feedback(username)
+        print('\nWhat else would you like to do today?')
+        menu_lecturer(username)
+
+    elif option == '6':
+        update_profile(username)
+        print('\nWhat else would you like to do today?')
+        menu_lecturer(username)
+
+    elif option == '7':
+        logout()
+    
+    else:
+        print('Please enter a valid number')
+        menu_admin()
     
 def menu_student():
     print('you are a trainer.')
@@ -569,7 +615,9 @@ def enroll_student():
         available_modules = ['Python','Java','SQL','C#','C++']
         available_module_levels = ['Beginner','Intermediate','Advance']
         module_name = input(f"Enter module name {available_modules}: ")
+        
         module_level = input(f'Enter module level {available_module_levels}: ')
+        module_level = module_level.capitalize()
         
         if module_name not in available_modules or module_level not in available_module_levels:
                 print('Enter valid module name or module level.') 
@@ -605,6 +653,7 @@ Select a trainer: ''')
                     for line in lines:
                         stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
                         if chosen_trainer == stored_trainer_username and module_level == stored_level and module_name == stored_module: # Append the new student to the existing list of students
+                            stored_students = stored_students.strip('students') # removes default value 'students'
                             updated_students = f'{stored_students},{student_name}' if stored_students else student_name 
                             update_classinfo = f'{stored_trainer_username}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students}\n'
                             file.write(update_classinfo)
@@ -642,11 +691,11 @@ Select a trainer: ''')
                 with open('payment_status.txt', 'r') as file:
                     existing_payment_status = {line.strip() for line in file}
 
-                with open('payment_status.txt', 'a') as file:
+                with open('payment_status.txt', 'a') as file: 
                     for modulepair in new_modulepairs:
-                        payment_status = f'{student_name}:{modulepair}:notpaid'
+                        payment_status = f'{chosen_trainer}:{student_name}:{modulepair}:notpaid'
                         if payment_status not in existing_payment_status:  # Check if the payment status is already present
-                            file.write(payment_status + '\n')
+                            file.write(f'{payment_status}\n')
                             existing_payment_status.add(payment_status)
                     
                 print(f'Student {student_name} enrolled in {chosen_trainer} {module_level} {module_name} class.')
@@ -659,6 +708,34 @@ Select a trainer: ''')
         print(f'Student {student_name} does not exist.') 
         return enroll_student()
 
-enroll_student()
-# register_student()
-# login()
+
+def delete_student():
+    student_username = input('Enter student username: ')
+    student_exist = False
+
+    with open('database.txt','w') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_user_type, stored_username, stored_password = line.strip().split(':')
+            if student_username == stored_username and stored_user_type == 'student':
+                line.rstrip()
+                student_exist = True
+            else:
+                file.write(line)
+
+    if student_exist:
+        with open('student_info.txt','w') as file:
+            lines = file.readlines()
+            for line in lines:
+                stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
+                if student_username == stored_username:
+                    line.rstrip()
+                else:
+                    file.write(line)
+
+        
+
+    else:
+        print('Student does not exist.')
+
+login()
