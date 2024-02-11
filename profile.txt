@@ -1,6 +1,7 @@
 admin1:Brendan:System Admin:email:contact
-bren:name:jobtitle:email:contact
-luwit:name:jobtitle:email:contact
-bren01:Brendan:status:course:year
-tom01:Tom:status:course:year
+lecturer1:lecturer:job_title:email:contact
 trainer1:name:jobtitle:email:contact
+bren01:Brendan:status:course:year
+mark01:Mark:status:course:year
+trainer2:name:jobtitle:email:contact
+jeryy01:Jerry:status:course:year

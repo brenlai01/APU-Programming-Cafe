@@ -1,2 +1,0 @@
-bren:Brendan:Intermediate,Java:notpaid
-bren:Tom:Intermediate,Java:notpaid
