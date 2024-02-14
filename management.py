@@ -140,7 +140,7 @@ def menu_lecturer(username):
     option = input('''
 Operations:
 1. Register student
-2. 
+2. Update student details
 3. Enroll student to module
 4. Unenroll students from their module.
 5. Approve student request
@@ -152,11 +152,6 @@ Select a number: ''')
         register_student()
         print('\nWhat else would you like to do today?')
         menu_lecturer(username)
-            
-    elif option == '2':
-        delete_student_from_completed_module()
-        print('\nWhat else would you like to do today?')
-        menu_lecturer(username)
 
     elif option == '3':
         enroll_student()
@@ -164,16 +159,16 @@ Select a number: ''')
         menu_lecturer(username)
 
     elif option == '4':
-        delete_student_from_completed_module()
+        unenroll_student()
         print('\nWhat else would you like to do today?')
         menu_lecturer(username)
     
     elif option == '5':
-        feedback(username)
+        approve_student(username)
         print('\nWhat else would you like to do today?')
         menu_lecturer(username)
 
-    elif option == '6':
+    elif option == '7':
         update_profile(username)
         print('\nWhat else would you like to do today?')
         menu_lecturer(username)
@@ -185,10 +180,49 @@ Select a number: ''')
         print('Please enter a valid number')
         menu_admin()
     
-def menu_student():
-    print('you are a trainer.')
-    pass
+def menu_student(username):
+    option = input('''
+Operations:
+1. View schedule
+2. Send enroll request to lecturer
+3. Delete enroll request
+4. View Invoice
+5. Update profile
+6. Logout
+Select a number: ''')
     
+    if option == '1':
+        view_schedule(username)
+        print('\nWhat else would you like to do today?')
+        menu_student(username)
+
+    elif option == '2':
+        send_request(username)
+        print('\nWhat else would you like to do today?')
+        menu_student(username)
+
+    elif option == '3':
+        delete_request(username)
+        print('\nWhat else would you like to do today?')
+        menu_student(username)
+
+    elif option == '4':
+        view_invoice()
+        print('\nWhat else would you like to do today?')
+        menu_student(username)
+    
+    elif option == '5':
+        update_profile(username)
+        print('\nWhat else would you like to do today?')
+        menu_student(username)
+
+    elif option == '6':
+        logout()
+
+    else:
+        print('Please enter a valid option.')
+        menu_student(username)
+
 def register_trainer(): 
     user_type = 'trainer' #ask for user input
     username = input('Trainer username: ')
@@ -457,7 +491,18 @@ Enter number: ''')
         feedback(username)
 
 def update_profile(username):
-    while True:
+    is_student = False
+
+    with open('database.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_user_type, stored_username, stored_password = line.strip().split(':')
+            if stored_user_type == 'student' and username == stored_username:
+                is_student = True
+
+
+
+    while is_student == False:
         with open('profile.txt','r') as file:
             lines = file.readlines()
             for line in lines:
@@ -526,6 +571,94 @@ Enter a number: ''')
                     if username == stored_username:
                         new_contact = input('Enter phone number: ')
                         updated_profile = f'{stored_username}:{stored_name}:{stored_jobtitle}:{stored_email}:{new_contact}\n'
+                        print(f"Contact has been updated to '{new_contact}'.")
+                        file.write(updated_profile)
+                        
+                    else:
+                        file.write(line)
+        elif option == '5':
+            print("Exiting profile update.")
+            break
+
+    while is_student == True:
+        with open('student_info.txt','r') as file:
+            lines2 = file.readlines()        
+            for line in lines2:
+                stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':')
+                if username == stored_username:
+                    print(f'''
+Name: {stored_studentname}
+TP Number: {stored_tpnum}
+Email: {stored_email}
+Contact: {stored_contact}
+Month of enrollment: {stored_moe}''')
+                    break
+       
+        with open('profile.txt','r') as file:
+            lines1 = file.readlines()
+            for line in lines1:
+                stored_username, stored_name, stored_status, stored_course, stored_year = line.strip().split(':')
+                if username == stored_username:
+                    print(f'''Status: {stored_status}
+Course: {stored_course}
+Contact: {stored_year}''')
+                    break
+                    
+        option = input('''
+Operations
+1. Status
+2. Course
+3. Intake
+4. Contact
+5. Exit
+Enter a number: ''')
+          
+        if option == '1':
+            with open('profile.txt','w') as file:
+                for line in lines1:
+                    stored_username, stored_name, stored_status, stored_course, stored_year = line.strip().split(':')
+                    if username == stored_username:
+                        new_status = input('Enter current status (available,away,do not disturb): ')
+                        updated_profile = f'{stored_username}:{stored_name}:{new_status}:{stored_course}:{stored_year}\n'
+                        print(f"Status has been updated to '{new_status}'.")
+                        file.write(updated_profile)
+                    
+                    else:
+                        file.write(line)
+
+        elif option == '2':
+            with open('profile.txt','w') as file:
+                for line in lines1:
+                    stored_username, stored_name, stored_status, stored_course, stored_year = line.strip().split(':')
+                    if username == stored_username:
+                        new_course = input('Enter enrolled course: ')
+                        updated_profile = f'{stored_username}:{stored_name}:{stored_status}:{new_course}:{stored_year}\n'
+                        print(f"Course has been updated to '{new_course}'.")
+                        file.write(updated_profile)
+                        
+                    else:
+                        file.write(line)
+
+        elif option == '3':
+            with open('profile.txt','w') as file:
+                for line in lines1:
+                    stored_username, stored_name, stored_status, stored_course, stored_year = line.strip().split(':')
+                    if username == stored_username:
+                        new_year = input('Enter Intake (Month,Year): ')
+                        updated_profile = f'{stored_username}:{stored_name}:{stored_status}:{stored_course}:{new_year}\n'
+                        print(f"Intake has been updated to '{new_year}'.")
+                        file.write(updated_profile)
+                        
+                    else:
+                        file.write(line)
+
+        elif option == '4':
+            with open('student_info.txt','w') as file:
+                for line in lines2:
+                    stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':')
+                    if username == stored_username:
+                        new_contact = input('Enter new contact information: ')
+                        updated_profile = f'{stored_username}:{stored_studentname}:{stored_tpnum}:{stored_email}:{new_contact}:{stored_moe}:{stored_modulepair}\n'
                         print(f"Contact has been updated to '{new_contact}'.")
                         file.write(updated_profile)
                         
@@ -697,13 +830,15 @@ Select a trainer: ''')
                 with open('class_info.txt','w') as file:
                     for line in lines:
                         stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
-                        if chosen_trainer == stored_trainer_username and module_level == stored_level and module_name == stored_module: # Append the new student to the existing list of students
-                            stored_students = stored_students.replace('students','') # removes default value 'students'
-                            updated_students = f'{stored_students},{student_name}' if stored_students else student_name 
-                            update_classinfo = f'{stored_trainer_username}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students}/notpaid\n'
+                        if chosen_trainer == stored_trainer_username and module_level == stored_level and module_name == stored_module: 
+                            stored_students = stored_students.replace('students','') # removes default value 'students' if it is present
+                            updated_students = f'{stored_students},{student_name}' if stored_students else student_name # Append the new student to the existing list of students
+                            update_classinfo = f'{stored_trainer_username}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students}/notpaid\n' 
                             file.write(update_classinfo)
                         else:
                             file.write(line)
+
+                updated_modulepair = [] 
 
                 with open('student_info.txt','r') as file:
                     lines = file.readlines()
@@ -711,16 +846,23 @@ Select a trainer: ''')
                 with open('student_info.txt','w') as file:
                     for line in lines:
                         stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs= line.strip().split(':')
-                        
+                        updated_students = []
                         if student_name == stored_studentname:
-                            new_modulepair = f'{module_level},{module_name}'
-                            updated_modulepairs = f'{stored_modulepairs};{new_modulepair}'
-                            updated_student_info = f'{stored_username}:{stored_studentname}:{stored_tpnum}:{stored_email}:{stored_contact}:{stored_moe}:{updated_modulepairs}\n'
+                            existing_modulepair = stored_modulepairs.strip().split(';')
+                            if 'modulepair' in existing_modulepair: # removes default value 'modulepair' from student_info.txt when student is newly registered 
+                                existing_modulepair.remove('modulepair')
+                            else:
+                                updated_modulepair = existing_modulepair # if not default value use existing modules from stored_modulepairs
+
+                            new_modulepair = f'{module_level},{module_name}' 
+                            updated_modulepair.append(new_modulepair) # add new_modulepair to existing modulepairs 
+                            updated_modulepair_str = ';'.join(updated_modulepair)
+                            updated_student_info = f'{stored_username}:{stored_studentname}:{stored_tpnum}:{stored_email}:{stored_contact}:{stored_moe}:{updated_modulepair_str}\n'
                             file.write(updated_student_info)
                         else:
                             file.write(line)
 
-                with open('module_status.txt','a') as file:
+                with open('module_status.txt','a') as file: 
                     file.write(f'{chosen_trainer}:{student_name}:{module_level}:{module_name}:notcompleted\n')
                 
                 print(f'Student {student_name} enrolled in {chosen_trainer} {module_level} {module_name} class.')
@@ -731,7 +873,7 @@ Select a trainer: ''')
     else:
         print(f'Student {student_name} does not exist.') 
 
-def delete_student_from_completed_module():
+def unenroll_student(): 
     student_name = input('Enter student name: ')
     student_username = input('Enter student username: ')
     student_exist = False
@@ -771,6 +913,19 @@ def delete_student_from_completed_module():
         if status == 'completed':
             module_status = True
 
+        elif status == 'notcompleted':
+            while True:
+                choice = input(f'Student {student_name} has not completed this module. Do you still wish to remove them from {level},{module}? (Y/N): ')
+                choice = choice.capitalize()
+                if choice == 'Y':
+                    module_status = True
+                    break
+                elif choice == 'N':
+                    module_status = False
+                    break
+                else:
+                    print('Please enter a valid choice.')
+                                    
         if module_status:
 
             with open('module_status.txt','r') as file:
@@ -805,14 +960,91 @@ def delete_student_from_completed_module():
                     updated_line = f'{stored_trainer_username}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_student_str}\n'
 
                     file.write(updated_line)
+
+            with open('student_info.txt','r') as file:
+                lines = file.readlines()
+
+            with open('student_info.txt','w') as file:
+                for line in lines:
+                    stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
+                    existing_modulepairs = stored_modulepairs.strip().split(';')
+
+                    updated_studentpair = []
+                    if student_name == stored_studentname and student_username == stored_username:
+                        for modulepairs in existing_modulepairs:
+                            stored_level, stored_module = modulepairs.strip().split(',')
+                            if level == stored_level and module == stored_module:
+                                continue
+                            else:
+                                updated_studentpair.append(modulepairs)
+                                
+                        updated_modulepair_str = ';'.join(updated_studentpair)
+                        updated_student_info  = f'{stored_username}:{stored_studentname}:{stored_tpnum}:{stored_email}:{stored_contact}:{stored_moe}:{updated_modulepair_str}\n'
+                        file.write(updated_student_info)
+                    else:
+                        file.write(line)
+
             
-            print(f'Student {student_name} has been deleted from {level},{module} class.')
+            print(f'Student {student_name} has been removed from {level},{module} class.')
 
         else:
-            print('Student has not completed their module.')
+            print(f'No changes have been made to student {student_name}.')
 
     else:
         print('Student does not exist.')
 
+def view_schedule(username):
+    with open('student_info.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
+            if username == stored_username:
+                student_name = stored_studentname
+                if len(stored_modulepairs) == 0:  # Check if stored_modulepairs is empty
+                    print('You are not enrolled in any modules.')
+                    return 
+    
+    available_modulepairs = []
 
-login()      
+    with open('class_info.txt','r') as file:
+        lines = file.readlines()
+    
+        for line in lines:
+            stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
+            existing_students = stored_students.strip().split(',')
+            for students in existing_students:
+                name, payment_status = students.strip().split('/')
+                if student_name == name:
+                    modulepair = (stored_level,stored_module) #adds tuple to modulepair list
+                    available_modulepairs.append(modulepair)
+
+    for num, modulepair in enumerate(available_modulepairs, 1):
+        level, module = modulepair  # Unpack the tuple in list
+        print(f'''{num}| Level: {level} | Module: {module}''')
+    
+    while True:
+        try:
+            option = int(input("Enter the number of module's schedule you would like to view: "))
+            if 1 <= option <= len(available_modulepairs):
+                level, module = list(available_modulepairs)[option -1]
+                break
+            else:
+                print('Enter a valid number.')
+        except ValueError:
+            print('Enter a valid number')
+    
+
+    with open('class_info.txt', 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
+            if stored_level == level and stored_module == module:
+                print(f'''
+Module | Schedule
+{level},{module} | {stored_schedule}''')
+                
+        
+login()
+
+            
+

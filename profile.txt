@@ -4,4 +4,4 @@ trainer1:name:jobtitle:email:contact
 mark01:Mark:status:course:year
 trainer2:name:jobtitle:email:contact
 jeryy01:Jerry:status:course:year
-bren01:bren:status:course:year
+bren01:bren:available:Computer Science:November 2023

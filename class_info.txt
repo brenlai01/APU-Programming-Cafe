@@ -1,2 +1,2 @@
 trainer1:Beginner:Python:150:Monday,2pm:Brendan/notpaid
-trainer2:Intermediate:Java:200:schedule:Brendan/notpaid,Mark/notpaid
+trainer2:Intermediate:Java:200:schedule:Brendan/notpaid,Jerry/notpaid
