@@ -1043,8 +1043,29 @@ def view_schedule(username):
 Module | Schedule
 {level},{module} | {stored_schedule}''')
                 
+def view_invoice(username):
+    with open('student_info.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
+            if username == stored_username:
+                student_name = stored_studentname
         
-login()
+    with open('class_info.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
+            existing_students = stored_students.strip().split(',')
+            for students in existing_students:
+                name, payment_status = students.strip().split('/')
+                if student_name == name:
+                    print(name)
+
+
+
+view_invoice(username = 'bren01')
+
+# login()
 
             
 
