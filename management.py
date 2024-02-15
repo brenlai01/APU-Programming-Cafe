@@ -1000,7 +1000,7 @@ def view_schedule(username):
             stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
             if username == stored_username:
                 student_name = stored_studentname
-                if len(stored_modulepairs) == 0:  # Check if stored_modulepairs is empty
+                if len(stored_modulepairs) == 0 or stored_modulepairs == 'modulepair':  # Check if stored_modulepairs is empty
                     print('You are not enrolled in any modules.')
                     return 
     
