@@ -90,7 +90,7 @@ Select a number: ''')
     
     else:
         print('Please enter a valid number')
-        menu_admin()
+        menu_admin(username)
 
 def menu_trainer(username): #username entered will identify which trainer it is
     
@@ -152,6 +152,11 @@ Select a number: ''')
         register_student()
         print('\nWhat else would you like to do today?')
         menu_lecturer(username)
+    
+    elif option == '2':
+        update_student()
+        print('\nWhat else would you like to do today?')
+        menu_lecturer(username)
 
     elif option == '3':
         enroll_student()
@@ -168,7 +173,7 @@ Select a number: ''')
         print('\nWhat else would you like to do today?')
         menu_lecturer(username)
 
-    elif option == '7':
+    elif option == '6':
         update_profile(username)
         print('\nWhat else would you like to do today?')
         menu_lecturer(username)
@@ -341,55 +346,49 @@ def assign_levelmodule():
 What level are they teaching? 
 1. Beginner
 2. Intermediate
-3. Advance
+3. Advanced
 Enter a number: ''')
 
-    if option == '1':
-        level = 'Beginner'
-    elif option == '2':
-        level = 'Intermediate'
-    elif option == '3':
-        level = 'Advance'
-    else:
+    # Map the option to the corresponding level
+    level_map = {'1': 'Beginner', '2': 'Intermediate', '3': 'Advanced'}
+    level = level_map.get(option)
+    if not level:
         print('Enter a valid number.')
         return
 
     available_modules = ['Python', 'Java', 'SQL', 'C#', 'C++']
     print(f'Available modules: {available_modules}')
 
-    #makes sure module are in list and less than five
-    while True: 
-        modules_input = input('Enter modules (comma-separated, max 5): ')
-        selected_modules = [module.strip() for module in modules_input.split(',')]
+    module_input = input('Enter module: ').strip()
 
-        if all(module in available_modules for module in selected_modules) and len(selected_modules) <= 5:
-            break
-        else:
-            print('Invalid modules. Please select from the available options.')
-            return
+    if module_input not in available_modules:
+        print('Invalid module. Please select from the available options.')
+        return
 
+    # Check if the trainer already teaches the selected module at the specified level
+    trainer_teaches = False
     with open('trainer_module.txt', 'r') as file:
-        lines = file.readlines()
-
-    #overwrites default values in trainer_module with new inputs from admin
-    with open('trainer_module.txt', 'w') as file:
-        for line in lines:
+        for line in file:
             stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
+            if username == stored_username and level == stored_level and module_input == stored_module:
+                trainer_teaches = True
+    
+    if trainer_teaches:
+        print(f'{username} already teaches {level},{module_input}.')
+    else:                                                                                                              
+        with open('trainer_module.txt', 'w') as file:  #overwrites default values in trainer_module with new inputs from admin
+            for line in lines:
+                stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
+                if username == stored_username and stored_user_type == 'trainer':
+                    updated_modules = f'trainer:{username}:{level}:{module_input}\n'
+                    file.write(updated_modules)
+                else:
+                    file.write(line)
 
-            if username == stored_username and stored_user_type == 'trainer':
-                # Update existing modules if they exist
-                existing_modules = [module.strip() for module in stored_module.split(',')]
-                updated_modules = f'trainer:{username}:{level}:{",".join(selected_modules)}\n'
-                file.write(updated_modules)
-            else:
-                file.write(line)
+        with open('class_info.txt', 'a') as file: # Append to 'class_info.txt' only if the trainer exists
+                file.write(f'{username}:{level}:{module_input}:fee:schedule:students\n')
 
-    # Append to 'class_info.txt' only if the trainer exists
-    with open('class_info.txt', 'a') as file:
-        for module in selected_modules:
-            file.write(f'{username}:{level}:{module}:fee:schedule:students\n')
-
-    print(f'Trainer {username} has been assigned to teach {level} {selected_modules}.')
+        print(f'Trainer {username} has been assigned to teach {level} {module_input}.')
 
 def view_income():
     trainer_name = input('Enter trainer name: ')
@@ -428,9 +427,10 @@ def view_income():
         if trainer_name == stored_trainer_username and selected_level == stored_level and selected_module == stored_module:
             fee = stored_fee
             for student_info in stored_students.strip().split(','):
-                student_name, payment_status = student_info.strip().split('/')
-                if payment_status == 'paid':
-                    paid_students.append(student_name)
+                if stored_students != 'students':
+                    student_name, payment_status = student_info.strip().split('/')
+                    if payment_status == 'paid':
+                        paid_students.append(student_name)
 
     try:
         if fee is not None:
@@ -797,8 +797,8 @@ def enroll_student():
         module_level = module_level.capitalize()
         
         if module_name not in available_modules or module_level not in available_module_levels:
-                print('Enter valid module name or module level.') 
-                return enroll_student()
+            print('Enter valid module name or module level.') 
+            return enroll_student()
             
         available_trainers = [] #set empty list
 
@@ -889,7 +889,7 @@ def unenroll_student():
     module_status = False
 
     if student_exist:
-        with open('module_status.txt','r') as file:
+        with open('module_status.txt','r') as file: 
             lines = file.readlines()
             for line in lines:
                 stored_trainer, stored_studentname, stored_level, stored_module, stored_module_status = line.strip().split(':')

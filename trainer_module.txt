@@ -1,2 +1,4 @@
 trainer:trainer1:Beginner:Python
 trainer:trainer2:Intermediate:Java
+trainer:trainer3:Advance:SQL
+trainer:trainer4:Intermediate:C#

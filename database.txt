@@ -5,3 +5,7 @@ student:bren01:asdasd
 student:mark01:asdasd
 trainer:trainer2:asdasd
 student:jeryy01:asdasd
+trainer:trainer3:asdasd
+student:tom01:asdasd
+trainer:trainer4:asdasd
+student:jane01:asdasd

@@ -1,7 +1,11 @@
-admin1:Brendan:System Admin:email:contact
+admin1:Brendan:System Admin:admin@mail.com:012345678
 lecturer1:lecturer:job_title:email:contact
-trainer1:name:jobtitle:email:contact
+trainer1:Ivan:Beginner Python Trainer:email:contact
 mark01:Mark:status:course:year
 trainer2:name:jobtitle:email:contact
 jeryy01:Jerry:status:course:year
 bren01:bren:available:Computer Science:November 2023
+trainer3:name:jobtitle:email:contact
+tom01:Tom:available:Software Engineering:Oct 2023
+trainer4:name:jobtitle:email:contact
+jane01:Jane:status:course:year

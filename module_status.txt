@@ -1,3 +1,6 @@
 trainer2:Brendan:Intermediate:Java:notcompleted
 trainer1:Brendan:Beginner:Python:notcompleted
 trainer2:Jerry:Intermediate:Java:notcompleted
+trainer3:Brendan:Advance:SQL:notcompleted
+trainer3:Mark:Advance:SQL:notcompleted
+trainer4:Tom:Intermediate:C#:notcompleted
