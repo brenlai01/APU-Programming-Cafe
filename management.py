@@ -1026,7 +1026,7 @@ def view_schedule(username):
         try:
             option = int(input("Enter the number of module's schedule you would like to view: "))
             if 1 <= option <= len(available_modulepairs):
-                level, module = list(available_modulepairs)[option -1]
+                selected_level, selected_module = list(available_modulepairs)[option -1]
                 break
             else:
                 print('Enter a valid number.')
@@ -1038,10 +1038,10 @@ def view_schedule(username):
         lines = file.readlines()
         for line in lines:
             stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
-            if stored_level == level and stored_module == module:
+            if stored_level == selected_level and stored_module == selected_module:
                 print(f'''
 Module | Schedule
-{level},{module} | {stored_schedule}''')
+{selected_level},{selected_module} | {stored_schedule}''')
                 
 def view_invoice(username):
     with open('student_info.txt','r') as file:
@@ -1051,6 +1051,8 @@ def view_invoice(username):
             if username == stored_username:
                 student_name = stored_studentname
         
+    available_modulepairs = set()
+
     with open('class_info.txt','r') as file:
         lines = file.readlines()
         for line in lines:
@@ -1059,7 +1061,59 @@ def view_invoice(username):
             for students in existing_students:
                 name, payment_status = students.strip().split('/')
                 if student_name == name:
-                    print(name)
+                    modulepair = (stored_level,stored_module,payment_status) #adds tuple to modulepair list
+                    available_modulepairs.add(modulepair)
+    
+    for num, (level, module, payment_status) in enumerate(available_modulepairs, 1):  # Enumerate available module pairs
+        print(f'{num}| Level: {level} | Module: {module} | Payment Status: {payment_status}')
+
+    while True: 
+        try:
+            option = int(input("\nEnter the number of the module you want to see income for: "))
+            if 1 <= option <= len(available_modulepairs):
+                selected_level, selected_module, selected_payment_status = list(available_modulepairs)[option - 1] #convert set to list for indexing. [option - 1] to adjust index as python start from 0
+                break  # Exit loop if option is valid
+            else:
+                print('Enter a valid number')
+        except ValueError:
+            print('Enter a valid number.')
+    
+    if selected_payment_status == 'notpaid':
+        choice = input('\nWould like you to make payment? (Y/N): ')
+        choice = choice.capitalize()
+
+        if choice == 'Y':
+            updated_lines = [] 
+
+            for line in lines:
+                stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
+                existing_students = stored_students.strip().split(',')
+                print(updated_lines)
+                updated_students_status = []
+
+                for student_info in existing_students:
+                    name, payment_status = student_info.strip().split('/')
+                    if selected_level == stored_level and selected_module == stored_module and student_name == name:
+                        payment_status = 'paid'
+                    updated_students_status.append(f'{name}/{payment_status}')
+
+                updated_students_status = ','.join(updated_students_status)
+                updated_line = f'{stored_trainer}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students_status}\n'
+                updated_lines.append(updated_line)
+
+            print(updated_lines)
+
+            # with open('class_info.txt', 'w') as file:
+            #     for updated_line in updated_lines:
+            #         file.write(updated_line)
+
+        else:
+            print('No payment made.')
+    
+    else:
+        print('You have already paid for this module.')
+                        
+    
 
 
 
