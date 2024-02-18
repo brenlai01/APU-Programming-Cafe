@@ -725,6 +725,47 @@ Select a trainer: ''')
     else:
         print(f'Student {student_name} does not exist.')         
 
+def approval():
+    option = int(input(f'''
+    1. View approval requests
+    2. Answer approval requests
+    3. Delete all requests
+    4. Back to home menu
+    '''))
+    if option == 1:
+        with open('viewapprovalrequests.txt') as file:
+            lines = file.readlines()
+            for line in lines:
+                stored_stud_id, pending_approval = line.strip().split(',')
+                print(f'TP {stored_stud_id}: {pending_approval} \n')
+            approval()
+    elif option == 2:
+        with open('viewapprovalrequests.txt') as file:
+            lines = file.readlines()
+        with open('viewapprovalrequests.txt', 'a') as file:
+            for line in lines:
+                stored_stud_id, pending_approval = line.strip().split(',')
+                print(f'TP {stored_stud_id}: {pending_approval} \n')
+                ans_approval = input('Enter Y/N to answer approval request: ')
+                
+                if ans_approval.upper() == 'Y' or 'YES':
+                    file.write(f'\nTP {stored_stud_id}, Your request has been approved.')
+                elif ans_approval == 'N' or 'NO':
+                    file.write(f'\nTP {stored_stud_id}, Your reqeust has been declined.')
+            approval()
+    elif option == 3:
+        with open('viewapprovalrequests.txt','r') as file:
+            lines = file.readlines()
+        with open('viewapprovalrequests.txt', 'w') as file:    
+            for line in lines:
+                line.rstrip()
+
+        print(f'All approval requests have been deleted.')
+    elif option == 4:
+        welcome()
+    else:
+        print('Invalid value entered, enter digits assigned to menus.')
+
 def unenroll_student(): 
     student_name = input('Enter student name: ')
     student_username = input('Enter student username: ')
