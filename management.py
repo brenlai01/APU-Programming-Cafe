@@ -628,174 +628,143 @@ def register_student():
     
     print(f'Student {student_name} has been registered.')
 
-def update():
-    update_what = int(input(
-        '''
-        1. Name
-        2. Student ID
-        3. Email
-        4. Level
-        5. Module
-        6. Month of enrollment
-        7. Home
-        '''
-    ))
-    if update_what == 1:
-        which_name_to_update = input('Enter name to update: ')
-        with open('details.txt','r') as file:
-            lines = file.readlines()
-            updated_lines = []
-            name_updated = False
-            for line in lines:
-                stored_name, stored_stud_id, stored_email, stored_level, stored_module, stored_month_of_enrollment = line.strip().split(',')
-                if which_name_to_update == stored_name:
-                    updated_name = input('Enter new name: ')
-                    print(f'Your name has been updated to {updated_name}')
-                    print(f'''
-    Your current details are now the following, 
-    Name: {updated_name}
-    Student ID: {stored_stud_id}
-    Email: {stored_email}
-    Level: {stored_level}
-    Module: {stored_module}
-    Month of enrollment: {stored_month_of_enrollment}''')
-                    updated_line = f'{updated_name},{stored_stud_id},{stored_email},{stored_level},{stored_module},{stored_month_of_enrollment}\n'
-                    updated_lines.append(updated_line)
-                    name_updated = True
-                else:
-                    updated_lines.append(line)
-            if not name_updated:
-                print('Name does not exist.')
-        with open('details.txt','w') as file:
-            file.writelines(updated_lines)
-        welcome()
+def update_student():
+    student_username = input('Enter student username: ')
+    student_exist = False
 
-    elif update_what == 2:
-        which_stud_id = input('Enter the student ID you want to change: ')
-
-        with open('details.txt', 'r') as file:
-            lines = file.readlines()
-            updated_lines = []
-            stud_id_updated = False
-            for line in lines:
-                stored_name, stored_stud_id, stored_email, stored_level, stored_module, stored_month_of_enrollment = line.strip().split(',')
-                if which_stud_id == stored_stud_id:
-                    updated_stud_id = input('Enter new student ID: ')
-                    updated_line = f'{stored_name},{updated_stud_id},{stored_email},{stored_level},{stored_module},{stored_month_of_enrollment}\n'
-                    updated_lines.append(updated_line)
-                    print(f'Your student ID has been updated to: {updated_stud_id}')
-                    print(f'''
-                    Your current details are now the following
-                    Name: {stored_name}
-                    Student ID: {updated_stud_id}
-                    Email: {stored_email}
-                    Level: {stored_level}
-                    Module: {stored_module}
-                    Month of enrollment: {stored_month_of_enrollment}''')
-                    stud_id_updated = True
-                else: 
-                    updated_lines.append(line)
-
-            if not stud_id_updated:
-                print('Student ID does not exist.')
-
-        with open('details.txt', 'w') as file:
-            file.writelines(updated_lines)
-        welcome()
-
-    elif update_what == 3:
-        which_email_to_update = input('Enter email to update: ')
-        with open('details.txt') as file:
-            lines = file.readlines()
-            updated_lines = []
-            email_updated = False
-            for line in lines:
-                stored_name, stored_stud_id, stored_email, stored_level, stored_module, stored_month_of_enrollment = line.strip().split(',')
-                if which_email_to_update == stored_email:
-                    updated_email = input('Enter new email: ')
-                    updated_line = f'{stored_name},{stored_stud_id},{updated_email},{stored_level},{stored_module},{stored_month_of_enrollment}\n'
-                    updated_lines.append(updated_line)
-                    print(f'{stored_name}, Your email has been updated to \'{updated_email}\'.')
-                    email_updated = True
-                else:
-                    updated_lines.append(line)
-            if not email_updated:
-                print('Entered email was not found.')
-        with open('details.txt', 'w') as file:
-            file.writelines(updated_lines)
-        welcome()
-    elif update_what == 4:
-        level_student_id = input('Enter student ID: ')
-        with open('details.txt') as file:
-            lines = file.readlines()
-            updated_lines = []
-            level_updated = False
-            for line in lines:
-                stored_name, stored_stud_id, stored_email, stored_level, stored_module, stored_month_of_enrollment = line.strip().split(',')
-                if level_student_id == stored_stud_id:
-                    which_lvl_to_upd_to = input('Enter current level: ')                    
-                    if which_lvl_to_upd_to == stored_level:
-                        updated_level = input('Enter new level: ')
-                        updated_line = f'{stored_name},{stored_stud_id},{stored_email},{updated_level},{stored_module},{stored_month_of_enrollment}\n'  
+    with open('student_info.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':')
+            if student_username == stored_username:
+                student_exist = True
+        
+    if student_exist:        
+        update_what = int(input('''
+1. Name
+2. TP Number
+3. Email
+4. Month of enrollment
+5. Back to Menu
+Enter a number: '''))
+        
+        if update_what == 1:
+            with open('student_info.txt','r') as file:
+                lines = file.readlines()
+                updated_lines = []
+                name_updated = False
+                for line in lines:
+                    stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':')
+                    if student_username == stored_username:
+                        updated_name = input('Enter new name: ')
+                        updated_line = f'{stored_username}:{updated_name}:{stored_tpnum}:{stored_email}:{stored_contact}:{stored_moe}:{stored_modulepair}\n'
                         updated_lines.append(updated_line)
-                        print(f'{stored_name}, Your level has been updated to: {updated_level}')
-                        level_updated = True
+                        print(f'Student name has been updated from {stored_studentname} to {updated_name}')
                     else:
                         updated_lines.append(line)
-                else:
-                    updated_lines.append(line)
-            if not level_updated:
-                print('User does not exist.')
-        with open('details.txt','w') as file:
-            file.writelines(updated_lines)
-        welcome()
 
-    elif update_what == 5:
-        module_student_id = input('Enter student ID: ')
-        with open('details.txt') as file:
-            lines = file.readlines()
-            updated_lines = []
-            module_updated = False
-            for line in lines:
-                stored_name, stored_stud_id, stored_email, stored_level, stored_module, stored_month_of_enrollment = line.rstrip().split(',')
-                if module_student_id == stored_stud_id:
-                    which_module_to_update = input('Enter module to update: ')
-                    if which_module_to_update == stored_module:
-                        updated_module = input('Enter new module: ')
-                        updated_line = f'{stored_name},{stored_stud_id},{stored_email},{stored_level},{updated_module},{stored_month_of_enrollment}\n'
+            print(f'''
+Your current details are now the following
+Name: {updated_name}
+Student TP Number: {stored_tpnum}
+Email: {stored_email}
+Contact: {stored_contact}
+Month of enrollment: {stored_moe}''')
+                    
+            with open('student_info.txt','w') as file:
+                file.writelines(updated_lines)
+            
+
+        elif update_what == 2:
+            with open('student_info.txt', 'r') as file:
+                lines = file.readlines()
+                updated_lines = []
+                
+                for line in lines:
+                    stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':')
+                    if student_username == stored_username:
+                        updated_tpnum = input('Enter new student ID: ')
+                        updated_line = f'{stored_username}:{stored_studentname}:{updated_tpnum}:{stored_email}:{stored_contact}:{stored_moe}:{stored_modulepair}\n'
                         updated_lines.append(updated_line)
-                        print(f'TP {stored_stud_id}, your module has been updated to: {updated_module} ')  
-                        module_updated = True
-                else:
-                    updated_lines.append(line)
-        if not module_updated:
-            print(f'Entered module is incorrect.')
-            welcome()
-        with open('details.txt','w') as file:
-            file.writelines(updated_lines)
+                        print(f'Student {stored_studentname} TP Number has been updated to: {updated_tpnum}')
+                        
+                    else: 
+                        updated_lines.append(line)
 
-    elif update_what == 6:
-        which_month_to_update = input('Enter current month of enrollment: ')
-        updated_month_of_enrollment = input('Enter new month of enrollment: ')
-        with open('details.txt') as file:
-            lines = file.readlines()
-            updated_lines = []
-            month_updated = False
-            for line in lines:
-                stored_name, stored_stud_id, stored_email, stored_level, stored_module, stored_month_of_enrollment = line.strip().split(',')
-                if which_month_to_update == stored_month_of_enrollment:
-                    updated_line = f'{stored_name},{stored_stud_id},{stored_email},{stored_level},{stored_module},{updated_month_of_enrollment}\n'
-                    updated_lines.append(updated_line)
-                    print(f'TP {stored_stud_id}, Your month of enrollment has been updated to:{updated_month_of_enrollment}')
-                    month_updated = True
-                else:
-                    updated_lines.append(line)
+            print(f'''
+Your current details are now the following
+Name: {stored_studentname}
+Student TP Number: {updated_tpnum}
+Email: {stored_email}
+Contact: {stored_contact}
+Month of enrollment: {stored_moe}''')
+                    
+            with open('student_info.txt', 'w') as file:
+                file.writelines(updated_lines)
 
-            if not month_updated:
-                print(f'Entered month of enrollment is incorrect.')
-        with open('details.txt','w') as file: 
-            file.writelines(updated_lines)   
-        welcome()
+        elif update_what == 3:
+            with open('student_info.txt', 'r') as file:
+                lines = file.readlines()
+                updated_lines = []
+                
+                for line in lines:
+                    stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':')
+                    if student_username == stored_username:
+                        updated_email = input('Enter new student email: ')
+                        updated_line = f'{stored_username}:{stored_studentname}:{stored_tpnum}:{updated_email}:{stored_contact}:{stored_moe}:{stored_modulepair}\n'
+                        updated_lines.append(updated_line)
+                        print(f'Student {stored_studentname} Email has been updated from {stored_email} to {stored_email}')
+                        
+                    else: 
+                        updated_lines.append(line)
+ 
+            print(f'''
+Your current details are now the following
+Name: {stored_studentname}
+Student TP Number: {stored_tpnum}
+Email: {updated_email}
+Contact: {stored_contact}
+Month of enrollment: {stored_moe}''')
+                    
+            with open('student_info.txt', 'w') as file:
+                file.writelines(updated_lines)
+            
+        elif update_what == 4:
+            with open('student_info.txt', 'r') as file:
+                lines = file.readlines()
+                updated_lines = []
+                
+                for line in lines:
+                    stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':')
+                    if student_username == stored_username:
+                        updated_moe = input('Enter new student month of enrollment: ')
+                        updated_line = f'{stored_username}:{stored_studentname}:{stored_tpnum}:{stored_email}:{stored_contact}:{updated_moe}:{stored_modulepair}\n'
+                        updated_lines.append(updated_line)
+                        print(f'Student {stored_studentname} month of enrollment has been updated from {stored_moe} to {updated_moe}')
+                        
+                    else: 
+                        updated_lines.append(line)
+    
+            print(f'''
+Your current details are now the following
+Name: {stored_studentname}
+Student TP Number: {stored_tpnum}
+Email: {stored_email}
+Contact: {stored_contact}
+Month of enrollment: {updated_moe}''')
+                    
+            with open('student_info.txt', 'w') as file:
+                file.writelines(updated_lines)
+                    
+        elif update_what == 5:
+            print('Exiting.')
+        
+        else:
+            print('Enter a valid number')
+            update_student()
+    
+    else:
+        print('Student username does not exist.')
 
 def enroll_student():
     student_name = input('Enter student name: ')
