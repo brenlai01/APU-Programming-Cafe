@@ -628,7 +628,7 @@ def register_student():
     
     print(f'Student {student_name} has been registered.')
 
-def update_student():
+def update():
     update_what = int(input(
         '''
         1. Name
