@@ -376,14 +376,9 @@ Enter a number: ''')
     if trainer_teaches:
         print(f'{username} already teaches {level},{module_input}.')
     else:                                                                                                              
-        with open('trainer_module.txt', 'w') as file:  #overwrites default values in trainer_module with new inputs from admin
-            for line in lines:
-                stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
-                if username == stored_username and stored_user_type == 'trainer':
-                    updated_modules = f'trainer:{username}:{level}:{module_input}\n'
-                    file.write(updated_modules)
-                else:
-                    file.write(line)
+        with open('trainer_module.txt', 'a') as file:  
+                updated_modules = f'trainer:{username}:{level}:{module_input}\n'
+                file.write(updated_modules)
 
         with open('class_info.txt', 'a') as file: # Append to 'class_info.txt' only if the trainer exists
                 file.write(f'{username}:{level}:{module_input}:fee:schedule:students\n')
@@ -1117,9 +1112,9 @@ def view_invoice(username):
 
 
 
-view_invoice(username = 'bren01')
 
-# login()
+
+login()
 
             
 

@@ -9,3 +9,4 @@ trainer3:name:jobtitle:email:contact
 tom01:Tom:available:Software Engineering:Oct 2023
 trainer4:name:jobtitle:email:contact
 jane01:Jane:status:course:year
+trainer5:name:jobtitle:email:contact
