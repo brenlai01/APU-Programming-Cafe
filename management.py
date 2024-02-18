@@ -580,7 +580,7 @@ Select a number: ''')
         menu_lecturer(username)
     
     elif option == '5':
-        approve_student(username)
+        approval(username)
         print('\nWhat else would you like to do today?')
         menu_lecturer(username)
 
@@ -725,35 +725,49 @@ Select a trainer: ''')
     else:
         print(f'Student {student_name} does not exist.')         
 
-def approval():
-    option = int(input(f'''
-    1. View approval requests
-    2. Answer approval requests
-    3. Delete all requests
-    4. Back to home menu
-    '''))
-    if option == 1:
+def approval(username):
+    option = input(f'''
+1. View approval requests
+2. Answer approval requests
+3. Delete all requests
+4. Back to home menu
+Enter a number: ''')
+    
+    if option == '1':
         with open('viewapprovalrequests.txt') as file:
             lines = file.readlines()
             for line in lines:
                 stored_stud_id, pending_approval = line.strip().split(',')
-                print(f'TP {stored_stud_id}: {pending_approval} \n')
-            approval()
-    elif option == 2:
+                print(f'''
+Student: {stored_stud_id} 
+Request: {pending_approval}''')
+            approval(username)
+
+    elif option == '2':
+        stud_id = input('Enter student username: ')
+
         with open('viewapprovalrequests.txt') as file:
             lines = file.readlines()
-        with open('viewapprovalrequests.txt', 'a') as file:
+        with open('viewapprovalrequests.txt', 'w') as file:
             for line in lines:
                 stored_stud_id, pending_approval = line.strip().split(',')
-                print(f'TP {stored_stud_id}: {pending_approval} \n')
-                ans_approval = input('Enter Y/N to answer approval request: ')
+                if stud_id == stored_stud_id:
+                    print(f'TP {stored_stud_id}: {pending_approval} \n')
+                    ans_approval = input('Enter Y/N to answer approval request: ')
+                    ans_approval = ans_approval.capitalize()
                 
-                if ans_approval.upper() == 'Y' or 'YES':
-                    file.write(f'\nTP {stored_stud_id}, Your request has been approved.')
-                elif ans_approval == 'N' or 'NO':
-                    file.write(f'\nTP {stored_stud_id}, Your reqeust has been declined.')
-            approval()
-    elif option == 3:
+                    if ans_approval == 'Y':
+                        file.write(f'{stored_stud_id},approved\n')
+                        print(f'Request of student {stud_id} has been approved.')
+                    elif ans_approval == 'N':
+                        file.write(line)
+                    else:
+                        print('Enter valid choice.')
+                        approval(username)
+                else:
+                    file.write(line)
+
+    elif option == '3':
         with open('viewapprovalrequests.txt','r') as file:
             lines = file.readlines()
         with open('viewapprovalrequests.txt', 'w') as file:    
@@ -761,8 +775,8 @@ def approval():
                 line.rstrip()
 
         print(f'All approval requests have been deleted.')
-    elif option == 4:
-        welcome()
+    elif option == '4':
+        menu_lecturer(username)
     else:
         print('Invalid value entered, enter digits assigned to menus.')
 
