@@ -1081,6 +1081,52 @@ Select a number: ''')
         print('Please enter a valid option.')
         menu_student(username)
 
+def request(username):
+    option = input('''
+Operations
+1. View sent request
+2. Send request
+3. Delete pending request''')
+    
+    if option == '1':
+        view_request(username)
+        menu_student()
+
+    elif option == '2':
+        send_request(username)
+        menu_student(username)
+    
+    elif option == '3':
+        delete_request(username)
+        menu_student(username)
+    else:
+        print('Enter a valid option.')
+        return menu_student(username)
+    
+def send_request(username):
+    student_username = username
+    available_modules = ['Python','Java','SQL','C#','C++']
+    while True:
+        new_module = input(f'Select a module {available_modules}: ')
+        if new_module in available_modules:
+            break
+        else:
+            print('Enter a valid module.')
+
+
+    with open('class_info.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
+            existing_students = stored_students.strip().split(',')
+            if any(student.split('/')[0] == student_username for student in existing_students) and new_module == stored_module:
+                student_enrolled = True
+
+    if student_enrolled:
+        print('bruh')
+    else:
+        print('buh')
+    
 def view_schedule(username):
     with open('student_info.txt','r') as file:
         lines = file.readlines()
