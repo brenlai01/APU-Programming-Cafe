@@ -1,3 +1,3 @@
 bren01:Brendan:555555:bren@mail.com:012345678:June:Beginner,Python;Intermediate,Java
 tom01:Tom:123123:tom@mail.com:012345678:May:Intermediate,Java;Beginner,Python
-jane01:Jane:456456:jane@mail.com:012345678:March:Beginner,Python
+jane01:Jane:456456:jane@mail.com:012345678:March:Beginner,Python;Advance,SQL

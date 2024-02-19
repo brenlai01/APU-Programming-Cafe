@@ -184,7 +184,7 @@ def delete_trainer():
 
     with open('class_info.txt','w') as file: #remove trainer from class_info.txt
         for line in lines:
-            stored_username, stored_module, stored_fee, stored_schedule = line.strip().split(':')
+            stored_username, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
              
             if username == stored_username:
                 line.rstrip()
@@ -339,7 +339,7 @@ What level are they teaching?
 Enter a number: ''')
 
         # Map the option to the corresponding level
-        level_map = {'1': 'Beginner', '2': 'Intermediate', '3': 'Advanced'}
+        level_map = {'1': 'Beginner', '2': 'Intermediate', '3': 'Advance'}
         level = level_map.get(option)
         if not level:
             print('Enter a valid number.')
@@ -476,7 +476,7 @@ Your modules: {stored_modules}''')
             
                 available_modules.append(stored_modules)
                    
-    module_input = input(f'Select module to update ({available_modules}): ')
+    module_input = input(f'Select module to update {available_modules}: ')
     
     if module_input not in available_modules:
         print('Invalid module selection. Please choose from the available modules.')
@@ -782,13 +782,13 @@ def enroll_student():
         
         module_level = input(f'Enter module level {available_module_levels}: ')
         module_level = module_level.capitalize()
-        
+
+        available_trainers = [] #set empty list
+
         if module_name not in available_modules or module_level not in available_module_levels:
             print('Enter valid module name or module level.') 
             return enroll_student()
             
-        available_trainers = [] #set empty list
-
         with open('class_info.txt','r') as file: #checks for available trainers that matchs level and module inputs and appends them to the empty list
             lines = file.readlines()
             for line in lines:

@@ -5,3 +5,4 @@ trainer2:name:jobtitle:email:contact
 bren01:Brendan:status:course:year
 tom01:Tom:status:course:year
 jane01:Jane:status:course:year
+test_trainer:name:jobtitle:email:contact

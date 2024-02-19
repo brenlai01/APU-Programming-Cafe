@@ -5,3 +5,4 @@ trainer:trainer2:asdasd
 student:bren01:asdasd
 student:tom01:asdasd
 student:jane01:asdasd
+trainer:test_trainer:asdasd

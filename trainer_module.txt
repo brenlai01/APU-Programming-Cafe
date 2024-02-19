@@ -1,2 +1,3 @@
 trainer:trainer1:Beginner:Python
 trainer:trainer2:Intermediate:Java
+trainer:test_trainer:Advance:SQL
