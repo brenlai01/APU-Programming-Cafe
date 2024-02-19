@@ -3,4 +3,3 @@ trainer1:bren01:Beginner:Python:notcompleted
 trainer1:jane01:Beginner:Python:notcompleted
 trainer2:bren01:Intermediate:Java:notcompleted
 trainer1:tom01:Beginner:Python:notcompleted
-test_trainer:jane01:Advance:SQL:notcompleted
