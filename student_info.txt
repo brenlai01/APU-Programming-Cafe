@@ -1,5 +1,3 @@
-bren01:Brenda:555555:brenda@mail.com:01116281080:May:Intermediate,Java;Beginner,Python;Advance,SQL
-mark01:Mark:666666:mark@mail.com:012345678:June:Advance,SQL
-jerry01:Jerry:321321:jerry@mail.com:012345678:July:Intermediate,Java
-tom01:Tom:456456:tom@mail.com:03214523412:May:Intermediate,C#
-jane01:Jane:123123:jane@mail.com:01235667:June:
+bren01:Brendan:555555:bren@mail.com:012345678:June:Beginner,Python;Intermediate,Java
+tom01:Tom:123123:tom@mail.com:012345678:May:Intermediate,Java;Beginner,Python
+jane01:Jane:456456:jane@mail.com:012345678:March:Beginner,Python

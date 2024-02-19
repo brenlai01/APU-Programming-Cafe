@@ -1,6 +1,2 @@
-trainer1:Beginner:Python:150:Monday,2pm:Brendan/paid
-trainer2:Intermediate:Java:200:schedule:Brendan/notpaid,Jerry/notpaid
-trainer3:Advance:SQL:300:Friday,3pm:Brendan/notpaid,Mark/notpaid
-trainer4:Intermediate:C#:200:Tuesday,1pm:Tom/notpaid
-trainer1:Beginner:Java:fee:schedule:students
-trainer3:Intermediate:Java:fee:schedule:students
+trainer1:Beginner:Python:150:Monday,1pm:bren01/notpaid,jane01/notpaid,tom01/notpaid
+trainer2:Intermediate:Java:200:Tuesday,12pm:tom01/paid,bren01/notpaid

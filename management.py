@@ -125,10 +125,6 @@ def register_trainer():
 
     with open('database.txt', 'a') as file: #append new trainer to database.txt for login
         file.write(f'{user_type}:{username}:{password}\n')
-        
-    
-    with open('trainer_module.txt','a') as file: #append new trainer to trainer.txt to assign modules
-        file.write(f'{user_type}:{username}:level:module\n')
 
     with open('profile.txt','a') as file: #append new trainer to profile.txt for update profile func
         file.write(f'{username}:name:jobtitle:email:contact\n')
@@ -205,8 +201,8 @@ def delete_trainer():
 
 def register_lecturer(): 
     user_type = 'lecturer' #ask for user input
-    username = input('Trainer username: ')
-    password = input('Trainer password: ')
+    username = input('Lecturer username: ')
+    password = input('Lecturer password: ')
     
     with open('database.txt','r') as file: #open file read by line and makes a list
         lines = file.readlines()
@@ -217,8 +213,8 @@ def register_lecturer():
         if username == stored_username:
             print(f'\nError: Username "{username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
             user_type = 'lecturer'
-            username = input('Trainer username: ')
-            password = input('Trainer password: ')
+            username = input('Lecturer username: ')
+            password = input('Lecturer password: ')
 
     with open('database.txt', 'a') as file: #append new trainer to database.txt for login
         file.write(f'{user_type}:{username}:{password}\n')
@@ -309,7 +305,7 @@ def view_income():
         if trainer_name == stored_trainer_username and selected_level == stored_level and selected_module == stored_module:
             fee = stored_fee
             for student_info in stored_students.strip().split(','):
-                if stored_students != 'students':
+                if stored_students != 'students/notpaid':
                     student_name, payment_status = student_info.strip().split('/')
                     if payment_status == 'paid':
                         paid_students.append(student_name)
@@ -327,10 +323,10 @@ def assign_levelmodule():
 
     trainer_exist = False
     
-    with open('trainer_module.txt', 'r') as file:
+    with open('database.txt', 'r') as file:
         lines = file.readlines()
         for line in lines:
-            stored_user_type, stored_username, stored_level, stored_module = line.strip().split(':')
+            stored_user_type, stored_username, stored_password = line.strip().split(':')
             if username == stored_username and stored_user_type == 'trainer':
                 trainer_exist = True
                 
@@ -374,7 +370,7 @@ Enter a number: ''')
                     file.write(updated_modules)
 
             with open('class_info.txt', 'a') as file: # Append to 'class_info.txt' only if the trainer exists
-                    file.write(f'{username}:{level}:{module_input}:fee:schedule:students\n')
+                    file.write(f'{username}:{level}:{module_input}:fee:schedule:students/notpaid\n')
 
             print(f'Trainer {username} has been assigned to teach {level} {module_input}.')
     else:
@@ -468,17 +464,19 @@ Select a number: ''')
         menu_trainer(username)
 
 def update_classinfo(username):
+    available_modules = []
+
     with open('trainer_module.txt', 'r') as file:
         for line in file:
             stored_usertype, stored_username, stored_level, stored_modules = line.strip().split(':')
             if username == stored_username:
-                available_modules = [module.strip() for module in stored_modules.split(',')]
                 print(f'''
 Level: {stored_level}
 Your modules: {stored_modules}''')
-                break
-
-    module_input = input(f'Select module to update ({stored_modules}): ')
+            
+                available_modules.append(stored_modules)
+                   
+    module_input = input(f'Select module to update ({available_modules}): ')
     
     if module_input not in available_modules:
         print('Invalid module selection. Please choose from the available modules.')
@@ -767,15 +765,14 @@ Month of enrollment: {updated_moe}''')
         print('Student username does not exist.')
 
 def enroll_student():
-    student_name = input('Enter student name: ')
-    student_name = student_name.capitalize()
+    student_username = input('Enter student username: ')
     student_exist = False
     
     with open('student_info.txt','r') as file: #read from student_info.txt to check if student exist.
         lines = file.readlines()
         for line in lines:
             stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs= line.strip().split(':')
-            if student_name == stored_studentname:
+            if student_username == stored_username:
                 student_exist = True
     
     if student_exist: #ask for module and level inputs
@@ -800,19 +797,22 @@ def enroll_student():
                     available_trainers.append(stored_trainer_username)
 
         #choose trainer    
-        chosen_trainer = input(f'''
+                    chosen_trainer = input(f'''
 Available Trainers for {stored_level} {stored_module}:{available_trainers}
 Select a trainer: ''')
 
         student_enrolled = False
 
-        if chosen_trainer in available_trainers:
+        if len(available_trainers) == 0:
+            print('No trainers available for this module currently. Please contact an admin.')
+
+        elif chosen_trainer in available_trainers:
             with open('class_info.txt','r') as file: #check if student is already enrolled in chosen course
                 lines = file.readlines()
                 for line in lines:
                     stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
                     existing_students = stored_students.strip().split(',')
-                    if any(student.split('/')[0] == student_name for student in existing_students) and module_name == stored_module:
+                    if any(student.split('/')[0] == student_username for student in existing_students) and module_name == stored_module:
                             student_enrolled = True
                             break
             
@@ -821,8 +821,8 @@ Select a trainer: ''')
                     for line in lines:
                         stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
                         if chosen_trainer == stored_trainer_username and module_level == stored_level and module_name == stored_module: 
-                            stored_students = stored_students.replace('students','') # removes default value 'students' if it is present
-                            updated_students = f'{stored_students},{student_name}' if stored_students else student_name # Append the new student to the existing list of students
+                            stored_students = stored_students.replace('students/notpaid','') # removes default value 'students/notpaid' if it is present
+                            updated_students = f'{stored_students},{student_username}' if stored_students else student_username # Append the new student to the existing list of students
                             update_classinfo = f'{stored_trainer_username}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students}/notpaid\n' 
                             file.write(update_classinfo)
                         else:
@@ -837,10 +837,10 @@ Select a trainer: ''')
                     for line in lines:
                         stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs= line.strip().split(':')
                         updated_students = []
-                        if student_name == stored_studentname:
+                        if student_username == stored_username:
                             existing_modulepair = stored_modulepairs.strip().split(';')
-                            if 'modulepair' in existing_modulepair: # removes default value 'modulepair' from student_info.txt when student is newly registered 
-                                existing_modulepair.remove('modulepair')
+                            if 'modulepair' in existing_modulepair or '' in existing_modulepair: # removes default value 'modulepair' from student_info.txt when student is newly registered 
+                                updated_modulepair = []
                             else:
                                 updated_modulepair = existing_modulepair # if not default value use existing modules from stored_modulepairs
 
@@ -853,15 +853,15 @@ Select a trainer: ''')
                             file.write(line)
 
                 with open('module_status.txt','a') as file: 
-                    file.write(f'{chosen_trainer}:{student_name}:{module_level}:{module_name}:notcompleted\n')
+                    file.write(f'{chosen_trainer}:{student_username}:{module_level}:{module_name}:notcompleted\n')
                 
-                print(f'Student {student_name} enrolled in {chosen_trainer} {module_level} {module_name} class.')
+                print(f'Student {student_username} enrolled in {chosen_trainer} {module_level} {module_name} class.')
     
             else:
-                print(f'Student {student_name} is already enrolled in this module')
+                print(f'Student {student_username} is already enrolled in this module')
             
     else:
-        print(f'Student {student_name} does not exist.')         
+        print(f'Student {student_username} does not exist.')         
 
 def approval(username):
     option = input(f'''
@@ -937,8 +937,8 @@ def unenroll_student():
         with open('module_status.txt','r') as file: 
             lines = file.readlines()
             for line in lines:
-                stored_trainer, stored_studentname, stored_level, stored_module, stored_module_status = line.strip().split(':')
-                if student_name == stored_studentname:
+                stored_trainer, stored_username, stored_level, stored_module, stored_module_status = line.strip().split(':')
+                if student_username == stored_username:
                     available_modulepairs.add((stored_level, stored_module, stored_module_status))
 
         for num, (level, module, status) in enumerate(available_modulepairs, 1):
@@ -978,8 +978,8 @@ def unenroll_student():
 
             with open('module_status.txt','w') as file:
                 for line in lines:
-                    stored_trainer, stored_studentname, stored_level, stored_module, stored_module_status = line.strip().split(':')
-                    if student_name == stored_studentname and level == stored_level and module == stored_module:
+                    stored_trainer, stored_username, stored_level, stored_module, stored_module_status = line.strip().split(':')
+                    if student_username == stored_username and level == stored_level and module == stored_module:
                         line.rstrip()
                     else:
                         file.write(line)
@@ -995,8 +995,8 @@ def unenroll_student():
                     updated_students = []
 
                     for student_info in existing_students:
-                        student, payment_status = student_info.strip().split('/')
-                        if student == student_name and level == stored_level and module == stored_module:
+                        username, payment_status = student_info.strip().split('/')
+                        if username == student_username and level == stored_level and module == stored_module:
                             continue
                         else:
                             updated_students.append(student_info)
@@ -1065,7 +1065,7 @@ Select a number: ''')
         menu_student(username)
 
     elif option == '4':
-        view_invoice()
+        view_invoice(username)
         print('\nWhat else would you like to do today?')
         menu_student(username)
     
@@ -1087,7 +1087,7 @@ def view_schedule(username):
         for line in lines:
             stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
             if username == stored_username:
-                student_name = stored_studentname
+                student_username = stored_username
                 if len(stored_modulepairs) == 0 or stored_modulepairs == 'modulepair':  # Check if stored_modulepairs is empty
                     print('You are not enrolled in any modules.')
                     return 
@@ -1101,8 +1101,8 @@ def view_schedule(username):
             stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
             existing_students = stored_students.strip().split(',')
             for students in existing_students:
-                name, payment_status = students.strip().split('/')
-                if student_name == name:
+                username, payment_status = students.strip().split('/')
+                if student_username == username:
                     modulepair = (stored_level,stored_module) #adds tuple to modulepair list
                     available_modulepairs.append(modulepair)
 
@@ -1131,14 +1131,7 @@ def view_schedule(username):
 Module | Schedule
 {selected_level},{selected_module} | {stored_schedule}''')
 
-def view_invoice(username):
-    with open('student_info.txt','r') as file:
-        lines = file.readlines()
-        for line in lines:
-            stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
-            if username == stored_username:
-                student_name = stored_studentname
-        
+def view_invoice(username):  
     available_modulepairs = set()
 
     with open('class_info.txt','r') as file:
@@ -1147,19 +1140,19 @@ def view_invoice(username):
             stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
             existing_students = stored_students.strip().split(',')
             for students in existing_students:
-                name, payment_status = students.strip().split('/')
-                if student_name == name:
-                    modulepair = (stored_level,stored_module,payment_status) #adds tuple to modulepair list
+                student_username, payment_status = students.strip().split('/')
+                if student_username == username:
+                    modulepair = (stored_level,stored_module,stored_fee,payment_status) #adds tuple to modulepair list
                     available_modulepairs.add(modulepair)
     
-    for num, (level, module, payment_status) in enumerate(available_modulepairs, 1):  # Enumerate available module pairs
-        print(f'{num}| Level: {level} | Module: {module} | Payment Status: {payment_status}')
+    for num, (level, module, fee, payment_status) in enumerate(available_modulepairs, 1):  # Enumerate available module pairs
+        print(f'{num}| Level: {level} | Module: {module} | Fee: {fee} | Payment Status: {payment_status}')
 
     while True: 
         try:
             option = int(input("\nEnter the number of the module you want to see income for: "))
             if 1 <= option <= len(available_modulepairs):
-                selected_level, selected_module, selected_payment_status = list(available_modulepairs)[option - 1] #convert set to list for indexing. [option - 1] to adjust index as python start from 0
+                selected_level, selected_module, selected_fee, selected_payment_status = list(available_modulepairs)[option - 1] #convert set to list for indexing. [option - 1] to adjust index as python start from 0
                 break  # Exit loop if option is valid
             else:
                 print('Enter a valid number')
@@ -1176,24 +1169,23 @@ def view_invoice(username):
             for line in lines:
                 stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
                 existing_students = stored_students.strip().split(',')
-                print(updated_lines)
                 updated_students_status = []
 
                 for student_info in existing_students:
-                    name, payment_status = student_info.strip().split('/')
-                    if selected_level == stored_level and selected_module == stored_module and student_name == name:
+                    student_username, payment_status = student_info.strip().split('/')
+                    if selected_level == stored_level and selected_module == stored_module and student_username == username:
                         payment_status = 'paid'
-                    updated_students_status.append(f'{name}/{payment_status}')
+                    updated_students_status.append(f'{student_username}/{payment_status}')
 
                 updated_students_status = ','.join(updated_students_status)
                 updated_line = f'{stored_trainer}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students_status}\n'
                 updated_lines.append(updated_line)
 
-            print(updated_lines)
-
-            # with open('class_info.txt', 'w') as file:
-            #     for updated_line in updated_lines:
-            #         file.write(updated_line)
+            with open('class_info.txt', 'w') as file:
+                for updated_line in updated_lines:
+                    file.write(updated_line)
+            
+            print(f'You have made payment for {selected_level} {selected_module}')
 
         else:
             print('No payment made.')
