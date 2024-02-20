@@ -1305,11 +1305,12 @@ def view_schedule(username):
         for line in lines:
             stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
             existing_students = stored_students.strip().split(',')
-            for students in existing_students:
-                username, payment_status = students.strip().split('/')
-                if student_username == username:
-                    modulepair = (stored_level,stored_module) #adds tuple to modulepair list
-                    available_modulepairs.append(modulepair)
+            if stored_students != '' and stored_students != 'students/notpaid':
+                for students in existing_students:
+                    username, payment_status = students.strip().split('/')
+                    if student_username == username:
+                        modulepair = (stored_level,stored_module) #adds tuple to modulepair list
+                        available_modulepairs.append(modulepair)
 
     for num, modulepair in enumerate(available_modulepairs, 1):
         level, module = modulepair  # Unpack the tuple in list
