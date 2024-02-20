@@ -1,3 +1,4 @@
-trainer1:Beginner:Python:150:Monday,1pm:bren01/notpaid,jane01/notpaid,tom01/notpaid
+trainer1:Beginner:Python:150:Monday,1pm:bren01/paid,tom01/notpaid
 trainer2:Intermediate:Java:200:Tuesday,12pm:tom01/paid,bren01/notpaid
-trainer1:Intermediate:Python:200:schedule:students/notpaid
+trainer1:Intermediate:Python:200:schedule:ben01/notpaid
+trainer1:Beginner:C#:150:Monday,1pm:

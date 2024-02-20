@@ -1,7 +1,8 @@
-admin1:Brendan:System Admin:admin@mail.com:012345678
+admin1:Brendan:System Admin:admin@mail.com:012123123
 lecturer1:lecturer:job_title:email:contact
-trainer1:name:jobtitle:email:contact
+trainer1:Anthony:3rd Year Student:anthony@mail.com:01231231
 trainer2:name:jobtitle:email:contact
 bren01:Brendan:status:course:year
 tom01:Tom:status:course:year
 jane01:Jane:status:course:year
+ben01:Ben:status:course:year
