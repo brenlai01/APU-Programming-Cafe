@@ -314,13 +314,13 @@ def view_income(username):
         stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
         if trainer_name == stored_trainer_username and selected_level == stored_level and selected_module == stored_module and stored_students is not None:
             fee = stored_fee
-            for student_info in stored_students.strip().split(','):
-                if stored_students != '' and stored_students != 'students/notpaid':
+            if stored_students != '' and stored_students != 'students/notpaid':
+                for student_info in stored_students.strip().split(','):
                     student_name, payment_status = student_info.strip().split('/')
                     if payment_status == 'paid':
                         paid_students.append(student_name)                
-        else:
-            fee = None
+            else:
+                fee = None
     try:
         if fee is not None:
             income = float(fee) * len(paid_students)
