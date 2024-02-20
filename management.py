@@ -560,11 +560,12 @@ def menu_lecturer(username):
         
     option = input('''
 Operations:
+Kindly choose one of the options below :-
 1. Register student
 2. Update student details
 3. Enroll student to module
 4. Unenroll students from their module.
-5. Students request
+5. Approval requests
 6. Update profile
 7. Logout
 Select a number: ''')
@@ -609,40 +610,40 @@ Select a number: ''')
 def register_student():
     student_name = input("Enter student's name: ")
     student_name = student_name.capitalize()
-    student_username = input('Enter student username: ')
+    student_username = input('Enter student\'s username: ')
     student_pw = input('Enter student password: ')
     
-    with open('student_info.txt','r') as file:
+    with open('student_info.txt') as file:
         lines = file.readlines()
         for line in lines:
             stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':') 
             if student_username == stored_username:
-                print(f'\nError: Username "{student_username}" already exists. Please choose a different username.') #checks if username exists, if exist ask again.
+                print(f'\nError: Username "{student_username}" already exists. Please choose a different username.') #checks if username exists, if exists asks again.
                 return register_student()
             
     
-    with open('database.txt','a') as file: #add username and password to database.txt for login
+    with open('database.txt','a') as file: #adds username and password to database.txt for login
         file.write(f'student:{student_username}:{student_pw}\n') 
     
-    tp_num = input('Enter student TP number: ')
-    email = input('Enter student email: ')
-    contact = input('Enter student contact: ')
+    tp_num = input('Enter student\'s TP number: ')
+    email = input('Enter student\'s email: ')
+    contact = input('Enter student\'s contact number: ')
     moe = input('Enter month of enrollment: ')
 
     
-    with open('student_info.txt','a') as file:
-        file.write(f'{student_username}:{student_name}:{tp_num}:{email}:{contact}:{moe}:modulepair\n')
+    with open('student_info.txt','a') as file:      #format of the txt file in which the data is going to be stored
+        file.write(f'{student_username}:{student_name}:{tp_num}:{email}:{contact}:{moe}:modulepair\n')      #module pair consists of module and level
     
-    with open('profile.txt','a') as file: #append new trainer to profile.txt for update profile func
+    with open('profile.txt','a') as file: #appends new trainer to profile.txt for update profile func
         file.write(f'{student_username}:{student_name}:status:course:year\n')
     
     print(f'Student {student_name} has been registered.')
 
-def update_student():
+def update_student():                   #change details of the student
     student_username = input('Enter student username: ')
-    student_exist = False
+    student_exist = False                                   #a flag  to see if the student exists in the records
 
-    with open('student_info.txt','r') as file:
+    with open('student_info.txt','r') as file:              #reads every line to finds the fed student_username
         lines = file.readlines()
         for line in lines:
             stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':')
@@ -661,7 +662,7 @@ Enter a number: '''))
         if update_what == 1:
             with open('student_info.txt','r') as file:
                 lines = file.readlines()
-                updated_lines = []
+                updated_lines = []              #basically forms a temporary txt file as the lines are going to be fed in this
                 name_updated = False
                 for line in lines:
                     stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepair = line.strip().split(':')
@@ -671,7 +672,7 @@ Enter a number: '''))
                         updated_lines.append(updated_line)
                         print(f'Student name has been updated from {stored_studentname} to {updated_name}')
                     else:
-                        updated_lines.append(line)
+                        updated_lines.append(line)          #if name does not match, it will append the original line which it was iterating to the above temp txt file
 
             print(f'''
 Your current details are now the following
@@ -682,7 +683,7 @@ Contact: {stored_contact}
 Month of enrollment: {stored_moe}''')
                     
             with open('student_info.txt','w') as file:
-                file.writelines(updated_lines)
+                file.writelines(updated_lines)                  #writes the temp txt file back into the original file
             
 
         elif update_what == 2:
@@ -778,37 +779,37 @@ Month of enrollment: {updated_moe}''')
 
 def enroll_student():
     student_username = input('Enter student username: ')
-    student_exist = False
+    student_exist = False                                       #turns true if the student is found and then enables a particular set of instructions that will be performed after
     
-    with open('student_info.txt','r') as file: #read from student_info.txt to check if student exist.
+    with open('student_info.txt','r') as file:                  #reads from student_info.txt to check if student exists.
         lines = file.readlines()
         for line in lines:
             stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs= line.strip().split(':')
             if student_username == stored_username:
                 student_exist = True
     
-    if student_exist: #ask for module and level inputs
+    if student_exist:                                           #asks for module and level
         available_modules = ['Python','Java','SQL','C#','C++']
         available_module_levels = ['Beginner','Intermediate','Advance']
-        module_name = input(f"Enter module name {available_modules}: ")
+        module_name = input(f'Enter module name {available_modules}: ')
         
-        module_level = input(f'Enter module level {available_module_levels}: ')
+        module_level = input(f'Enter module level {available_module_levels} : ')
         module_level = module_level.capitalize()
 
-        available_trainers = [] #set empty list
+        available_trainers = []                                 #initializing an empty list
 
-        if module_name not in available_modules or module_level not in available_module_levels:
+        if module_name not in available_modules or module_level not in available_module_levels:     #basic english, works like an OR gate
             print('Enter valid module name or module level.') 
             return enroll_student()
             
-        with open('class_info.txt','r') as file: #checks for available trainers that matchs level and module inputs and appends them to the empty list
+        with open('class_info.txt','r') as file: #checks for available trainers that match the level and module inputs and appends them to the empty list
             lines = file.readlines()
             for line in lines:
                 stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
                 if module_level == stored_level and module_name == stored_module:
                     available_trainers.append(stored_trainer_username)
 
-        #choose trainer    
+                    #choose trainer
                     chosen_trainer = input(f'''
 Available Trainers for {stored_level} {stored_module}:{available_trainers}
 Select a trainer: ''')
@@ -819,7 +820,7 @@ Select a trainer: ''')
             print('No trainers available for this module currently. Please contact an admin.')
 
         elif chosen_trainer in available_trainers:
-            with open('class_info.txt','r') as file: #check if student is already enrolled in chosen course
+            with open('class_info.txt','r') as file:                #checks if student is already enrolled in chosen course
                 lines = file.readlines()
                 for line in lines:
                     stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
@@ -833,7 +834,7 @@ Select a trainer: ''')
                     for line in lines:
                         stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
                         if chosen_trainer == stored_trainer_username and module_level == stored_level and module_name == stored_module: 
-                            stored_students = stored_students.replace('students/notpaid','') # removes default value 'students/notpaid' if it is present
+                            stored_students = stored_students.replace('students/notpaid','') # removes default value 'students/notpaid' if it is present as strings are immutable
                             updated_students = f'{stored_students},{student_username}' if stored_students else student_username # Append the new student to the existing list of students
                             update_classinfo = f'{stored_trainer_username}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students}/notpaid\n' 
                             file.write(update_classinfo)
@@ -891,7 +892,7 @@ Enter a number: ''')
                 stored_studentusername, stored_level, stored_module, approval_status = line.strip().split(':')
                 student_modules.append((stored_studentusername, stored_level,stored_module,approval_status))
         
-        for num, (stored_studentusername, level, module, status) in enumerate(student_modules,1):
+        for num, (stored_studentusername, level, module, status) in enumerate(student_modules,1):                   #iterates over student module retreiving index number and each student's request
             print(f'{num}| Username: {stored_studentusername} | Level: {level} | Module: {module} | Approval status: {status}')
         
         approval(username)
