@@ -83,7 +83,7 @@ Select a number: ''')
         menu_admin(username)
 
     elif option == '6':
-        view_income()
+        view_income(username)
         print('\nWhat else would you like to do today?')
         menu_admin(username)
     
@@ -276,21 +276,23 @@ def delete_lecturer():
         print(f'This lecturer does not exist.')
         delete_lecturer()
 
-def view_income():
+def view_income(username):
     trainer_name = input('Enter trainer name: ')
     available_module_pairs = set()  # Use set to store unique module and level pairs
+    available_trainers = set()
 
     with open('class_info.txt', 'r') as file:
         lines = file.readlines()
 
     for line in lines:
         stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
+        available_trainers.add(stored_trainer_username)
         if trainer_name == stored_trainer_username:
             available_module_pairs.add((stored_level, stored_module))  # Add unique module and level pairs
 
-    if not available_module_pairs:
+    if trainer_name not in available_trainers:
         print(f'Trainer does not exist.')
-        return view_income()
+        return menu_admin(username)
 
     print(f'Available modules and levels for {trainer_name}:')
     for num, (level, module) in enumerate(available_module_pairs, 1):  # Enumerate available module pairs
@@ -310,14 +312,15 @@ def view_income():
     paid_students = []
     for line in lines:
         stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
-        if trainer_name == stored_trainer_username and selected_level == stored_level and selected_module == stored_module:
+        if trainer_name == stored_trainer_username and selected_level == stored_level and selected_module == stored_module and stored_students is not None:
             fee = stored_fee
-            for student_info in stored_students.strip().split(','):
-                if stored_students != 'students/notpaid':
+            if stored_students != '' and stored_students != 'students/notpaid':
+                for student_info in stored_students.strip().split(','):
                     student_name, payment_status = student_info.strip().split('/')
                     if payment_status == 'paid':
-                        paid_students.append(student_name)
-
+                        paid_students.append(student_name)                
+            else:
+                fee = None
     try:
         if fee is not None:
             income = float(fee) * len(paid_students)
@@ -433,11 +436,10 @@ def menu_trainer(username): #username entered will identify which trainer it is
     option = input('''
 Operations:
 1. Update class info
-2. Delete class info
-3. View students
-4. Send feedback to admin
-5. Update profile
-6. Logout
+2. View students
+3. Send feedback to admin
+4. Update profile
+5. Logout
 Select a number: ''')
     if option == '1':
         update_classinfo(username)
@@ -445,26 +447,21 @@ Select a number: ''')
         menu_trainer(username)
 
     elif option == '2':
-        delete_classinfo(username)
-        print('\nWhat else would you like to do today?')
-        menu_trainer(username)
-
-    elif option == '3':
         view_student(username)
         print('\nWhat else would you like to do today?')
         menu_trainer(username)
 
-    elif option == '4':
+    elif option == '3':
         send_feedback(username)
         print('\nWhat else would you like to do today?')
         menu_trainer(username)
 
-    elif option == '5':
+    elif option == '4':
         update_profile(username)
         print('\nWhat else would you like to do today?')
         menu_trainer(username)
     
-    elif option == '6':
+    elif option == '5':
         logout()
     
     else:
@@ -507,48 +504,94 @@ Module: {stored_module}
 Fee: {stored_fee}
 Schedule: {stored_schedule}''')
     
-    option = input('''
+    while True:
+        option = input('''
 Operations
 1. Class fee
 2. Class schedule
 3. Exit
 Select a number: ''')
-    
-    with open('class_info.txt','r') as file:
+        with open('class_info.txt','r') as file:
+            lines = file.readlines()
+
+        if option == '1':
+            with open('class_info.txt', 'w') as file:
+                for line in lines:
+                    stored_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
+                    if username == stored_username and selected_module == stored_module and selected_level == stored_level:
+                        new_fee = input('Enter new fee: ')
+                        updated_classfee = f'{stored_username}:{stored_level}:{stored_module}:{new_fee}:{stored_schedule}:{student_num}\n'
+                        file.write(updated_classfee)
+                        print(f'Class fee has been updated from [{stored_fee}] to [{new_fee}]')
+                    else:
+                        file.write(line)
+        
+        elif option == '2':
+            with open('class_info.txt', 'w') as file:
+                for line in lines:
+                    stored_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
+                    if username == stored_username and selected_module == stored_module and selected_level == stored_level:
+                        class_day = input('Enter day: ')
+                        class_time = input('Enter time: ')
+                        new_schedule = f'{class_day},{class_time}'
+                        updated_classfee = f'{stored_username}:{stored_level}:{stored_module}:{stored_fee}:{new_schedule}:{student_num}\n'
+                        file.write(updated_classfee)
+                        print(f'Class schedule has been updated from [{stored_schedule}] to [{new_schedule}]')
+                    else:
+                        file.write(line)
+
+        elif option == '3':
+            menu_trainer(username)
+            break
+        else:
+            print('Enter a valid number.')
+            update_classinfo(username)    
+
+def view_student(username):
+    available_module_pairs = set()
+
+    with open('class_info.txt', 'r') as file:
         lines = file.readlines()
 
-    if option == '1':
-        with open('class_info.txt', 'w') as file:
-            for line in lines:
-                stored_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
-                if username == stored_username and selected_module == stored_module and selected_level == stored_level:
-                    new_fee = input('Enter new fee: ')
-                    updated_classfee = f'{stored_username}:{stored_level}:{stored_module}:{new_fee}:{stored_schedule}:{student_num}\n'
-                    file.write(updated_classfee)
-                    print(f'Class fee has been updated from [{stored_fee}] to [{new_fee}]')
-                else:
-                    file.write(line)
-    
-    elif option == '2':
-        with open('class_info.txt', 'w') as file:
-            for line in lines:
-                stored_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
-                if username == stored_username and selected_module == stored_module and selected_level == stored_level:
-                    class_day = input('Enter day: ')
-                    class_time = input('Enter time: ')
-                    new_schedule = f'{class_day},{class_time}'
-                    updated_classfee = f'{stored_username}:{stored_level}:{stored_module}:{stored_fee}:{new_schedule}:{student_num}\n'
-                    file.write(updated_classfee)
-                    print(f'Class schedule has been updated from [{stored_schedule}] to [{new_schedule}]')
-                else:
-                    file.write(line)
+    for line in lines:
+        stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
+        if username == stored_trainer_username:
+            available_module_pairs.add((stored_level, stored_module))
 
-    elif option == '3':
-        menu_trainer(username)
+    print('Your available modules:')
+    for num, (level, module) in enumerate(available_module_pairs, 1):  # Enumerate available module pairs
+        print(f"{num}. {level}: {module}")
 
+    while True: 
+        try:
+            option = int(input("Enter the number of the module you want to see income for: "))
+            if 1 <= option <= len(available_module_pairs):
+                selected_level, selected_module = list(available_module_pairs)[option - 1] #convert set to list for indexing. [option - 1] to adjust index as python start from 0
+                break 
+            else:
+                print('Enter a valid number')
+        except ValueError:
+            print('Enter a valid number.')
+
+    paid_students = []
+    notpaid_students = []
+
+    for line in lines:
+        stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
+        if username == stored_trainer_username and selected_level == stored_level and selected_module == stored_module:
+            for student_info in stored_students.strip().split(','):
+                if stored_students != 'students/notpaid':
+                    student_name, payment_status = student_info.strip().split('/')
+                    if payment_status == 'paid':
+                        paid_students.append(student_name)
+                    else:
+                        notpaid_students.append(student_name)
+
+    if len(notpaid_students) == 0 and len(paid_students) == 0:
+        print('No students are enrolled in this class.')
     else:
-        print('Enter a valid number.')
-        update_classinfo(username)    
+        print(f'''Paid Students: {paid_students}
+Not Paid Students: {notpaid_students}''')
 
 def send_feedback(username): #current trainer as parameter so the func knows which trainer it is
     feedback = input('Enter message: ')
@@ -650,7 +693,7 @@ def update_student():                   #change details of the student
             if student_username == stored_username:
                 student_exist = True
         
-    if student_exist:        
+    while student_exist:        
         update_what = int(input('''
 1. Name
 2. TP Number
@@ -769,10 +812,11 @@ Month of enrollment: {updated_moe}''')
                     
         elif update_what == 5:
             print('Exiting.')
+            break
         
         else:
             print('Enter a valid number')
-            update_student()
+            
     
     else:
         print('Student username does not exist.')
@@ -920,41 +964,61 @@ Enter a number: ''')
                     print('Enter a valid number.')
             except ValueError:
                 print('Enter a valid number')
-
-        student_pending = False
-        
-        with open('viewapprovalrequests.txt', 'w') as file:
-            for line in lines:
-                stored_studentusername, stored_level, stored_module, approval_status = line.strip().split(':')
-                if stud_id == stored_studentusername and selected_level == stored_level and selected_module == stored_module and approval_status == 'pending':
-                    ans_approval = input('Enter Y/N to answer approval request: ')
-                    ans_approval = ans_approval.capitalize()
-                    
-                    if ans_approval == 'Y':
-                        respond = 'approved'
-                        file.write(f'{stored_studentusername}:{stored_level}:{stored_module}:{respond}\n')
-                        print(f'Request of student {stud_id} has been approved.')
-                        student_pending = True
-                    
-                    elif ans_approval == 'N':
-                        respond = 'rejected'
-                        file.write(f'{stored_studentusername}:{stored_level}:{stored_module}:{respond}\n')
-                        print(f'Request of student {stud_id} has been rejected.')
-                        student_pending = True
-
+        if selected_status == 'approved' or selected_status == 'rejected':
+            student_pending = False
+        else: 
+            while True:
+                try:
+                    option2 = int(input('''
+Operations:
+1. Approve
+2. Reject
+3. Exit
+Select a number: '''))
+                    if option2 == 1:
+                        choice = '1'
+                        break
+                    elif option2 == 2:
+                        choice = '2'
+                        break
+                    elif option2 == 3:
+                        choice = '3'
+                        break
                     else:
-                        print('Enter valid choice.')
-                        file.write(line)
-                        approval(username)
-                else:
-                    print('Select a valid option')
-                    file.write(line)
+                        print('Enter a valid number.')
+                except ValueError:
+                    print('Enter a valid number')
+            
+            if choice == '1':
+                with open('viewapprovalrequests.txt', 'w') as file:
+                    for line in lines:
+                        stored_studentusername, stored_level, stored_module, approval_status = line.strip().split(':')
+                        if stud_id == stored_studentusername and selected_level == stored_level and selected_module == stored_module and approval_status == 'pending':            
+                            respond = 'approved'
+                            file.write(f'{stored_studentusername}:{stored_level}:{stored_module}:{respond}\n')
+                            student_pending = True
+                        else:
+                            file.write(line)
+                        
+            elif choice == '2':
+                with open('viewapprovalrequests.txt', 'w') as file:
+                    for line in lines:
+                        stored_studentusername, stored_level, stored_module, approval_status = line.strip().split(':')
+                        if stud_id == stored_studentusername and selected_level == stored_level and selected_module == stored_module and approval_status == 'pending':                        
+                            respond = 'rejected'
+                            file.write(f'{stored_studentusername}:{stored_level}:{stored_module}:{respond}\n')
+                            student_pending = True
+                        else:
+                            file.write(line)
 
-            if not student_pending:
-                print(f'Student request has already been {approval_status}.')
+            elif choice == '3':
+                return(approval(username))
+
+        if not student_pending:
+                print(f'Student request has already been {selected_status}.')
                 
-            else:
-                print(f'Request of student {stud_id} has been {respond}.')
+        else:
+            print(f'Request of student {stud_id} has been {respond}.')
     
     elif option == '3':
         menu_lecturer(username)
@@ -1098,26 +1162,21 @@ Select a number: ''')
         menu_student(username)
 
     elif option == '2':
-        send_request(username)
-        print('\nWhat else would you like to do today?')
-        menu_student(username)
-
-    elif option == '3':
         request(username)
         print('\nWhat else would you like to do today?')
         menu_student(username)
 
-    elif option == '4':
+    elif option == '3':
         view_invoice(username)
         print('\nWhat else would you like to do today?')
         menu_student(username)
     
-    elif option == '5':
+    elif option == '4':
         update_profile(username)
         print('\nWhat else would you like to do today?')
         menu_student(username)
 
-    elif option == '6':
+    elif option == '5':
         logout()
 
     else:
@@ -1247,11 +1306,12 @@ def view_schedule(username):
         for line in lines:
             stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
             existing_students = stored_students.strip().split(',')
-            for students in existing_students:
-                username, payment_status = students.strip().split('/')
-                if student_username == username:
-                    modulepair = (stored_level,stored_module) #adds tuple to modulepair list
-                    available_modulepairs.append(modulepair)
+            if stored_students != '' and stored_students != 'students/notpaid':
+                for students in existing_students:
+                    username, payment_status = students.strip().split('/')
+                    if student_username == username:
+                        modulepair = (stored_level,stored_module) #adds tuple to modulepair list
+                        available_modulepairs.append(modulepair)
 
     for num, modulepair in enumerate(available_modulepairs, 1):
         level, module = modulepair  # Unpack the tuple in list
@@ -1294,6 +1354,9 @@ def view_invoice(username):
     
     for num, (level, module, fee, payment_status) in enumerate(available_modulepairs, 1):  # Enumerate available module pairs
         print(f'{num}| Level: {level} | Module: {module} | Fee: {fee} | Payment Status: {payment_status}')
+    
+    choice = input('\nWould like you to make payment? (Y/N): ')
+    choice = choice.capitalize()
 
     while True: 
         try:
@@ -1306,11 +1369,8 @@ def view_invoice(username):
         except ValueError:
             print('Enter a valid number.')
     
-    if selected_payment_status == 'notpaid':
-        choice = input('\nWould like you to make payment? (Y/N): ')
-        choice = choice.capitalize()
-
-        if choice == 'Y':
+    if choice == 'Y':
+        if selected_payment_status == 'notpaid':
             updated_lines = [] 
 
             for line in lines:
@@ -1333,13 +1393,13 @@ def view_invoice(username):
                     file.write(updated_line)
             
             print(f'You have made payment for {selected_level} {selected_module}')
-
+        
         else:
-            print('No payment made.')
+            print('You have already paid for this module.')
     
     else:
-        print('You have already paid for this module.')
-      
+        print('No payment made.')
+  
 def update_profile(username):
     is_student = False
 

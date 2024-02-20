@@ -1,2 +1,2 @@
 bren01:Beginner:SQL:approved
-bren01:Advance:Python:pending
+bren01:Advance:Python:rejected
