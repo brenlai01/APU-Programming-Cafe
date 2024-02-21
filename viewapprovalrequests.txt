@@ -1,6 +1,4 @@
-bren01:Beginner:SQL:approved
-bren01:Advance:Python:pending
-bren02:Beginner:SQL:approved
-bren02:Advance:Python:rejected
-bren03:Beginner:SQL:approved
-bren04:Advance:Python:rejected
+bren01:Intermediate:Java:approved
+bren01:Advance:SQL:rejected
+new_student:Beginner:Java:approved
+new_student:Beginner:Python:pending

@@ -1,5 +1,3 @@
-bren01:Brendan:555555:bren@mail.com:012345678:June:Beginner,Python;Intermediate,Java
-tom01:Tommy:666666:tommy@mail.com:012345678:October:Intermediate,Java;Beginner,Python
-jane01:Janet:456456:jane@mail.com:012345678:March:Advance,SQL
-ben01:Ben:123123:ben@mail.com:456654:June:Intermediate,Python
-user01student:user1:11111:user01@mail.com::Jan:modulepair
+bren01:Brendan Lai:123123:bren@mail.com:012345678:June:Beginner,Python;Intermediate,Java
+jerry01:Jerry:456456:jerry@mail.com:012345677:June:Beginner,Python;Advance,C#
+new_student:John:555555:john@mail.com:012345678:January:Intermediate,C++

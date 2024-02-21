@@ -1,11 +1,8 @@
 admin:admin1:asdasd
-lecturer:lecturer1:asdasd
-trainer:trainer2:asdasd
-student:bren01:asdasd
-student:tom01:asdasd
-student:jane01:asdasd
-trainer:trainer4:asdasd
-trainer:trainer5:asdasd
 trainer:trainer1:asdasd
-student:ben01:asdasd
-student:user01student:asdasd
+lecturer:lecturer1:asdasd
+student:bren01:asdasd
+student:jerry01:asdasd
+trainer:trainer2:asdasd
+trainer:new_trainer:asdasd
+student:new_student:asdasd

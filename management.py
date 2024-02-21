@@ -251,18 +251,15 @@ def delete_lecturer():
                 user_exist = True # sets flag to true when username input matches stored username
             else:
                 file.write(line)
-    
-    with open ('trainer_module.txt','r') as file: #remove trainer from trainer_module.txt
-        lines = file.readlines()
 
     with open('profile.txt','r') as file: 
         lines = file.readlines()
 
-    with open('profile.txt','w') as file: #remove trainer from profile.txt
+    with open('profile.txt','w') as file: #remove lecturer from profile.txt
         for line in lines:
             stored_username, stored_name, stored_jobtitle, stored_email, stored_contact = line.strip().split(':')
              
-            if username == stored_username and stored_user_type == 'lecturer':
+            if username == stored_username:
                 line.rstrip()
                 user_exist = True # user exist set to true as username input same as store_username in database
             
@@ -320,7 +317,7 @@ def view_income(username):
                     if payment_status == 'paid':
                         paid_students.append(student_name)                
             else:
-                fee = None
+                fee = ''
     try:
         if fee is not None:
             income = float(fee) * len(paid_students)
@@ -401,7 +398,7 @@ Enter number: ''')
     if option == '1':
         for line in lines:
             stored_trainer_username, stored_feedback_message = line.strip().split(':')
-            print(f'{stored_trainer_username}:{stored_feedback_message}\n')
+            print(f'{stored_trainer_username}: {stored_feedback_message}\n')
         feedback(username)
 
     elif option == '2':
@@ -491,28 +488,29 @@ def update_classinfo(username):
                 print('Enter a valid number')
         except ValueError:
             print('Enter a valid number.')
-    
-    with open('class_info.txt','r') as file:
-        lines2 = file.readlines()
-        for line in lines2:
-            stored_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
-            if username == stored_username and selected_module == stored_module and selected_level == stored_level:
-                print(f'''
+    while True:
+
+        with open('class_info.txt','r') as file:
+            lines2 = file.readlines()
+            for line in lines2:
+                stored_username, stored_level, stored_module, stored_fee, stored_schedule, student_num = line.strip().split(':')
+                if username == stored_username and selected_module == stored_module and selected_level == stored_level:
+                    print(f'''
 Name: {stored_username}
 Level: {stored_level}
 Module: {stored_module}
 Fee: {stored_fee}
 Schedule: {stored_schedule}''')
-    
-    while True:
-        option = input('''
+        
+        
+            option = input('''
 Operations
 1. Class fee
 2. Class schedule
 3. Exit
 Select a number: ''')
-        with open('class_info.txt','r') as file:
-            lines = file.readlines()
+            with open('class_info.txt','r') as file:
+                lines = file.readlines()
 
         if option == '1':
             with open('class_info.txt', 'w') as file:
@@ -943,6 +941,7 @@ Enter a number: ''')
 
     elif option == '2':
         stud_id = input('Enter student username: ')
+        student_exist = False
 
         with open('viewapprovalrequests.txt') as file:
             lines = file.readlines()
@@ -950,76 +949,81 @@ Enter a number: ''')
                 stored_studentusername, stored_level, stored_module, approval_status = line.strip().split(':')
                 if stud_id == stored_studentusername:
                     student_modules.append((stored_level,stored_module,approval_status))
-        
-        for num, (level, module, status) in enumerate(student_modules,1):
-            print(f'{num}| Level: {level} | Module: {module} | Approval status: {status}')
+                    student_exist = True
 
-        while True:
-            try:
-                option = int(input("Enter the number of student request you want to approve: "))
-                if 1 <= option <= len(student_modules):
-                    selected_level, selected_module, selected_status = student_modules[option -1]
-                    break
-                else:
-                    print('Enter a valid number.')
-            except ValueError:
-                print('Enter a valid number')
-        if selected_status == 'approved' or selected_status == 'rejected':
-            student_pending = False
-        else: 
+        if student_exist:       
+            for num, (level, module, status) in enumerate(student_modules,1):
+                print(f'{num}| Level: {level} | Module: {module} | Approval status: {status}')
+
             while True:
                 try:
-                    option2 = int(input('''
-Operations:
-1. Approve
-2. Reject
-3. Exit
-Select a number: '''))
-                    if option2 == 1:
-                        choice = '1'
-                        break
-                    elif option2 == 2:
-                        choice = '2'
-                        break
-                    elif option2 == 3:
-                        choice = '3'
+                    option = int(input("Enter the number of student request you want to approve: "))
+                    if 1 <= option <= len(student_modules):
+                        selected_level, selected_module, selected_status = student_modules[option -1]
                         break
                     else:
                         print('Enter a valid number.')
                 except ValueError:
                     print('Enter a valid number')
-            
-            if choice == '1':
-                with open('viewapprovalrequests.txt', 'w') as file:
-                    for line in lines:
-                        stored_studentusername, stored_level, stored_module, approval_status = line.strip().split(':')
-                        if stud_id == stored_studentusername and selected_level == stored_level and selected_module == stored_module and approval_status == 'pending':            
-                            respond = 'approved'
-                            file.write(f'{stored_studentusername}:{stored_level}:{stored_module}:{respond}\n')
-                            student_pending = True
+            if selected_status == 'approved' or selected_status == 'rejected':
+                student_pending = False
+            else: 
+                while True:
+                    try:
+                        option2 = int(input('''
+Operations:
+1. Approve
+2. Reject
+3. Exit
+Select a number: '''))
+                        if option2 == 1:
+                            choice = '1'
+                            break
+                        elif option2 == 2:
+                            choice = '2'
+                            break
+                        elif option2 == 3:
+                            choice = '3'
+                            break
                         else:
-                            file.write(line)
-                        
-            elif choice == '2':
-                with open('viewapprovalrequests.txt', 'w') as file:
-                    for line in lines:
-                        stored_studentusername, stored_level, stored_module, approval_status = line.strip().split(':')
-                        if stud_id == stored_studentusername and selected_level == stored_level and selected_module == stored_module and approval_status == 'pending':                        
-                            respond = 'rejected'
-                            file.write(f'{stored_studentusername}:{stored_level}:{stored_module}:{respond}\n')
-                            student_pending = True
-                        else:
-                            file.write(line)
-
-            elif choice == '3':
-                return(approval(username))
-
-        if not student_pending:
-                print(f'Student request has already been {selected_status}.')
+                            print('Enter a valid number.')
+                    except ValueError:
+                        print('Enter a valid number')
                 
+                if choice == '1':
+                    with open('viewapprovalrequests.txt', 'w') as file:
+                        for line in lines:
+                            stored_studentusername, stored_level, stored_module, approval_status = line.strip().split(':')
+                            if stud_id == stored_studentusername and selected_level == stored_level and selected_module == stored_module and approval_status == 'pending':            
+                                respond = 'approved'
+                                file.write(f'{stored_studentusername}:{stored_level}:{stored_module}:{respond}\n')
+                                student_pending = True
+                            else:
+                                file.write(line)
+                            
+                elif choice == '2':
+                    with open('viewapprovalrequests.txt', 'w') as file:
+                        for line in lines:
+                            stored_studentusername, stored_level, stored_module, approval_status = line.strip().split(':')
+                            if stud_id == stored_studentusername and selected_level == stored_level and selected_module == stored_module and approval_status == 'pending':                        
+                                respond = 'rejected'
+                                file.write(f'{stored_studentusername}:{stored_level}:{stored_module}:{respond}\n')
+                                student_pending = True
+                            else:
+                                file.write(line)
+
+                elif choice == '3':
+                    return(approval(username))
+
+            if not student_pending:
+                    print(f'Student request has already been {selected_status}.')
+                
+            else:
+                print(f'Request of student {stud_id} for {selected_level} {selected_module} has been {respond}.')
+        
         else:
-            print(f'Request of student {stud_id} has been {respond}.')
-    
+            print('Student does not exist.')
+
     elif option == '3':
         menu_lecturer(username)
 
@@ -1188,11 +1192,12 @@ def request(username):
 Operations
 1. View sent request
 2. Send request
-3. Delete pending request''')
+3. Delete pending request
+Enter a number: ''')
     
     if option == '1':
         view_request(username)
-        menu_student()
+        menu_student(username)
 
     elif option == '2':
         send_request(username)
@@ -1233,13 +1238,15 @@ def send_request(username):
 
     student_enrolled = False
 
-    with open('class_info.txt','r') as file:
+    with open('student_info.txt','r') as file:
         lines = file.readlines()
         for line in lines:
-            stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
-            existing_students = stored_students.strip().split(',')
-            if any(student.split('/')[0] == student_username for student in existing_students) and new_module == stored_module and new_level == stored_level:
-                student_enrolled = True
+            stored_studentusername, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
+            existing_modulepairs = stored_modulepairs.strip().split(';')
+            for modulepairs in existing_modulepairs:
+                stored_level, stored_module = modulepairs.strip().split(',')
+                if username == stored_studentusername and new_level == stored_level and new_module == stored_module:
+                    student_enrolled = True
 
     if student_enrolled:
         print('You are already enrolled in this module.')
@@ -1247,6 +1254,7 @@ def send_request(username):
     else:
         with open('viewapprovalrequests.txt','a') as file:
             file.write(f'{username}:{new_level}:{new_module}:pending\n')
+            print(f'You have sent a request to enrolled in {new_level} {new_module}.')
 
 def delete_request(username):
     available_modules = []
@@ -1346,30 +1354,32 @@ def view_invoice(username):
         for line in lines:
             stored_trainer, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
             existing_students = stored_students.strip().split(',')
-            for students in existing_students:
-                student_username, payment_status = students.strip().split('/')
-                if student_username == username:
-                    modulepair = (stored_level,stored_module,stored_fee,payment_status) #adds tuple to modulepair list
-                    available_modulepairs.add(modulepair)
+            if stored_students != '' and stored_students != 'students/notpaid':
+                for students in existing_students:
+                    student_username, payment_status = students.strip().split('/')
+                    if student_username == username:
+                        modulepair = (stored_level,stored_module,stored_fee,payment_status) #adds tuple to modulepair list
+                        available_modulepairs.add(modulepair)
     
     for num, (level, module, fee, payment_status) in enumerate(available_modulepairs, 1):  # Enumerate available module pairs
         print(f'{num}| Level: {level} | Module: {module} | Fee: {fee} | Payment Status: {payment_status}')
     
     choice = input('\nWould like you to make payment? (Y/N): ')
     choice = choice.capitalize()
-
-    while True: 
-        try:
-            option = int(input("\nEnter the number of the module you want to see income for: "))
-            if 1 <= option <= len(available_modulepairs):
-                selected_level, selected_module, selected_fee, selected_payment_status = list(available_modulepairs)[option - 1] #convert set to list for indexing. [option - 1] to adjust index as python start from 0
-                break  # Exit loop if option is valid
-            else:
-                print('Enter a valid number')
-        except ValueError:
-            print('Enter a valid number.')
-    
     if choice == 'Y':
+
+        while True: 
+            try:
+                option = int(input("\nEnter the number of the module you want to pay: "))
+                if 1 <= option <= len(available_modulepairs):
+                    selected_level, selected_module, selected_fee, selected_payment_status = list(available_modulepairs)[option - 1] #convert set to list for indexing. [option - 1] to adjust index as python start from 0
+                    break  # Exit loop if option is valid
+                else:
+                    print('Enter a valid number')
+            except ValueError:
+                print('Enter a valid number.')
+    
+    
         if selected_payment_status == 'notpaid':
             updated_lines = [] 
 
@@ -1378,27 +1388,35 @@ def view_invoice(username):
                 existing_students = stored_students.strip().split(',')
                 updated_students_status = []
 
-                for student_info in existing_students:
-                    student_username, payment_status = student_info.strip().split('/')
-                    if selected_level == stored_level and selected_module == stored_module and student_username == username:
-                        payment_status = 'paid'
-                    updated_students_status.append(f'{student_username}/{payment_status}')
+                if selected_level == stored_level and selected_module == stored_module == stored_fee == 'fee':
+                    print('Trainer has not set a fee for this module.')
+                    return
 
-                updated_students_status = ','.join(updated_students_status)
-                updated_line = f'{stored_trainer}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students_status}\n'
-                updated_lines.append(updated_line)
+                else:
+                    for student_info in existing_students:
+                        student_username, payment_status = student_info.strip().split('/')
+                        if selected_level == stored_level and selected_module == stored_module and student_username == username:
+                            payment_status = 'paid'
+                        updated_students_status.append(f'{student_username}/{payment_status}')
+
+                    updated_students_status = ','.join(updated_students_status)
+                    updated_line = f'{stored_trainer}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students_status}\n'
+                    updated_lines.append(updated_line)
 
             with open('class_info.txt', 'w') as file:
                 for updated_line in updated_lines:
                     file.write(updated_line)
             
-            print(f'You have made payment for {selected_level} {selected_module}')
+            print(f'You have made payment for {selected_level} {selected_module}.')
         
         else:
             print('You have already paid for this module.')
     
-    else:
+    elif choice == 'N':
         print('No payment made.')
+
+    else:
+        print('Enter a valid option.')
   
 def update_profile(username):
     is_student = False

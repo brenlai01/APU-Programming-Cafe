@@ -1,1 +1,1 @@
-trainer1:Hi admin
+new_trainer:Hi admin
