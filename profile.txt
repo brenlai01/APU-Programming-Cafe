@@ -6,3 +6,4 @@ trainer2:name:jobtitle:email:contact
 lecturer1:Thomas:jobtitle:email:contact
 new_trainer:Tony:jobtitle:email:contact
 new_student:John:status:course:year
+tommy01:Tommy:status:course:year

@@ -578,7 +578,7 @@ def view_student(username):
         stored_trainer_username, stored_level, stored_module, stored_fee, stored_schedule, stored_students = line.strip().split(':')
         if username == stored_trainer_username and selected_level == stored_level and selected_module == stored_module:
             for student_info in stored_students.strip().split(','):
-                if stored_students != 'students/notpaid':
+                if stored_students != 'students/notpaid' and stored_students != '':
                     student_name, payment_status = student_info.strip().split('/')
                     if payment_status == 'paid':
                         paid_students.append(student_name)
@@ -1598,4 +1598,3 @@ Enter a number: ''')
             print('Enter a valid number.')
 
 login()
-            
