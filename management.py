@@ -1348,7 +1348,17 @@ def view_schedule(username):
 Module | Schedule
 {selected_level},{selected_module} | {stored_schedule}''')
 
-def view_invoice(username):  
+def view_invoice(username): 
+    with open('student_info.txt','r') as file:
+        lines = file.readlines()
+        for line in lines:
+            stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
+            if username == stored_username:
+                student_username = stored_username
+                if len(stored_modulepairs) == 0 or stored_modulepairs == 'modulepair':  # Check if stored_modulepairs is empty
+                    print('You are not enrolled in any modules.')
+                    return 
+
     available_modulepairs = set()
 
     with open('class_info.txt','r') as file:
