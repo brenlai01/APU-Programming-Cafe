@@ -1,4 +1,5 @@
 bren01:Intermediate:Java:approved
 bren01:Advance:SQL:rejected
 new_student:Beginner:Java:approved
-new_student:Beginner:Python:pending
+new_student:Beginner:Python:rejected
+jason01:Beginner:Python:pending

@@ -7,3 +7,5 @@ trainer:trainer2:asdasd
 trainer:new_trainer:asdasd
 student:new_student:asdasd
 student:tommy01:asdasd
+trainer:trainer5:asdasd
+student:jason01:asdasd

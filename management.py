@@ -324,7 +324,7 @@ def view_income(username):
             print(f'Number of paid students: {len(paid_students)}')
             print(f'Total Monthly income: ${income}')
     except ValueError:
-        print('Trainer has not set a fee for this course')
+        print('Trainer has not generated any income')
 
 def assign_levelmodule():
     username = input('Enter username of trainer: ')
@@ -398,7 +398,7 @@ Enter number: ''')
     if option == '1':
         for line in lines:
             stored_trainer_username, stored_feedback_message = line.strip().split(':')
-            print(f'{stored_trainer_username}: {stored_feedback_message}\n')
+            print(f'{stored_trainer_username}: {stored_feedback_message}')
         feedback(username)
 
     elif option == '2':
@@ -646,7 +646,7 @@ Select a number: ''')
     
     else:
         print('Please enter a valid number')
-        menu_admin()
+        menu_lecturer(username)
 
 def register_student():
     student_name = input("Enter student's name: ")
@@ -1107,11 +1107,12 @@ def unenroll_student():
                     updated_students = []
 
                     for student_info in existing_students:
-                        username, payment_status = student_info.strip().split('/')
-                        if username == student_username and level == stored_level and module == stored_module:
-                            continue
-                        else:
-                            updated_students.append(student_info)
+                        if student_info != '' and student_info != 'students/notpaid':
+                            username, payment_status = student_info.strip().split('/')
+                            if username == student_username and level == stored_level and module == stored_module:
+                                   continue
+                            else:
+                                updated_students.append(student_info)
                     
                     updated_student_str = ','.join(updated_students)
                     updated_line = f'{stored_trainer_username}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_student_str}\n'
@@ -1125,7 +1126,7 @@ def unenroll_student():
                 for line in lines:
                     stored_username, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
                     existing_modulepairs = stored_modulepairs.strip().split(';')
-
+        
                     updated_studentpair = []
                     if student_name == stored_studentname and student_username == stored_username:
                         for modulepairs in existing_modulepairs:
@@ -1244,9 +1245,10 @@ def send_request(username):
             stored_studentusername, stored_studentname, stored_tpnum, stored_email, stored_contact, stored_moe, stored_modulepairs = line.strip().split(':')
             existing_modulepairs = stored_modulepairs.strip().split(';')
             for modulepairs in existing_modulepairs:
-                stored_level, stored_module = modulepairs.strip().split(',')
-                if username == stored_studentusername and new_level == stored_level and new_module == stored_module:
-                    student_enrolled = True
+                if modulepairs != '':
+                    stored_level, stored_module = modulepairs.strip().split(',')
+                    if username == stored_studentusername and new_level == stored_level and new_module == stored_module:
+                        student_enrolled = True
 
     if student_enrolled:
         print('You are already enrolled in this module.')
@@ -1394,10 +1396,11 @@ def view_invoice(username):
 
                 else:
                     for student_info in existing_students:
-                        student_username, payment_status = student_info.strip().split('/')
-                        if selected_level == stored_level and selected_module == stored_module and student_username == username:
-                            payment_status = 'paid'
-                        updated_students_status.append(f'{student_username}/{payment_status}')
+                        if student_info != '':
+                            student_username, payment_status = student_info.strip().split('/')
+                            if selected_level == stored_level and selected_module == stored_module and student_username == username:
+                                payment_status = 'paid'
+                            updated_students_status.append(f'{student_username}/{payment_status}')
 
                     updated_students_status = ','.join(updated_students_status)
                     updated_line = f'{stored_trainer}:{stored_level}:{stored_module}:{stored_fee}:{stored_schedule}:{updated_students_status}\n'
