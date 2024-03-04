@@ -1056,16 +1056,20 @@ def unenroll_student():
         for num, (level, module, status) in enumerate(available_modulepairs, 1):
             print(f'{num}| Module: {level},{module} | Status: {status}')
 
-        while True:
-            try:
-                option = int(input("Enter the number of student's module you would like to delete: "))
-                if 1 <= option <= len(available_modulepairs):
-                    level, module, status = list(available_modulepairs)[option -1]
-                    break
-                else:
-                    print('Enter a valid number.')
-            except ValueError:
-                print('Enter a valid number')
+        if len(available_modulepairs) != 0:
+            while True:
+                try:
+                    option = int(input("Enter the number of student's module you would like to delete: "))
+                    if 1 <= option <= len(available_modulepairs):
+                        level, module, status = list(available_modulepairs)[option -1]
+                        break
+                    else:
+                        print('Enter a valid number.')
+                except ValueError:
+                    print('Enter a valid number')
+        else:
+            print('Student not enrolled in any modules.')
+            return
 
         if status == 'completed':
             module_status = True

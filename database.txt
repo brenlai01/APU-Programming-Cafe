@@ -4,8 +4,9 @@ lecturer:lecturer1:asdasd
 student:bren01:asdasd
 student:jerry01:asdasd
 trainer:trainer2:asdasd
-trainer:new_trainer:asdasd
 student:new_student:asdasd
 student:tommy01:asdasd
-trainer:trainer5:asdasd
 student:jason01:asdasd
+trainer:new_trainer:asdasd
+student:thomas01:asdasd
+student:rachel01:asdasd

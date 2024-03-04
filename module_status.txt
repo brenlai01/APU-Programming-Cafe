@@ -2,5 +2,5 @@ trainer1:bren01:Beginner:Python:notcompleted
 trainer1:bren01:Intermediate:Java:notcompleted
 trainer1:jerry01:Beginner:Python:notcompleted
 trainer2:jerry01:Advance:C#:notcompleted
-new_trainer:new_student:Intermediate:C++:notcompleted
 trainer2:tommy01:Advance:C++:notcompleted
+trainer1:jason01:Beginner:Python:notcompleted
